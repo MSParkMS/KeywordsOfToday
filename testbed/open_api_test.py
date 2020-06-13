@@ -1,7 +1,7 @@
 import requests
 import json
 
-testKey = ""
+testKey = "5a616755c609136c99d80a46c29b66fc"
 
 keyArg = "key="
 targetDtArg = "targetDt="
@@ -80,3 +80,19 @@ for movieListInfo in movieListInfos:
         print(actors["peopleNm"])
 
     break
+
+"""
+from movie_open_api import MovieOpenAPI
+
+movieOpenAPI = MovieOpenAPI()
+print(movieOpenAPI.getMovieGenres("명량"))
+print(movieOpenAPI.getMovieDirectors("명량"))
+for director in movieOpenAPI.getMovieDirectors("명량"):
+    print("\n" + director + " 필모")
+    print(movieOpenAPI.getPeopleFilmos(director, False, True))
+
+print(movieOpenAPI.getMovieActors("명량"))
+for actor in movieOpenAPI.getMovieActors("명량"):
+    print("\n" + actor + " 필모")
+    print(movieOpenAPI.getPeopleFilmos(actor, True, True))
+"""

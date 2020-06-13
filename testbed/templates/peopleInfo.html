@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>인물 정보</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <style type="text/css">
+      .container {
+        max-width: 1000px;
+        padding-top: 50px;
+        font-size: 16px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h3><p>{{notice}}</p></h3>       <!-- my_str 바인딩 -->
+      <h4><p>필모그래피</p></h3>
+        <ul>
+        {% for f in peopleInfo["filmos"] %}
+        <li>{{f}}</li>
+        {% endfor %}
+        </ul>
+    <a href="/">목록으로</a>
+  </body>
+</html>

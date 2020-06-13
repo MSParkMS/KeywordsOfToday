@@ -12,54 +12,7 @@ from datetime import datetime
 from bs4 import BeautifulSoup
 from io import StringIO
 from flask import Flask, render_template
-
-
-app = Flask(__name__)
- 
-@app.route('/')
-def hello_world():
-    return render_template (
-                'theaterList.html',
-                title="영화관 리스트",
-                notice = "서울지역 영화관 목록입니다.",
-                theaterList = select_theaters_all()
-            )
-
-@app.route('/movieTable')
-def getMovieTable():
-    return render_template(
-                'movieList.html',
-                title="상영중인 영화",
-                notice = "현재 상영중인 영화 목록입니다.",
-                movieList = select_playMovieList_all()
-            )
-    
-@app.route('/timetable/<movie_seq>')
-def getTimetableForMovie(movie_seq):
-    #선택한 영화가 상영중인 영화관들을 가져와서 갱신시켜줘야함
-    pts = get_movie_play_s_timetable_by_s2(movie_seq)
-    for pt in pts :
-        updateTimetable(pt[1],pt[2])
-    return render_template(
-                'moviePlayList.html',
-                title="상영중인 영화관",
-                notice = "선택하신 영화가 상영중인 영화관 시간표입니다.",
-                theaterList = get_movie_play_s_timetable_by_s(movie_seq)
-            )
-
-@app.route('/timetable/<theaters>/<thName>')
-def getTimetable(theaters,thName) :
-    updateTimetable(theaters,thName)
-
-    return render_template(
-                'timetable.html',
-                title="영화시간표",
-                notice = theaters+" "+thName+"의 영화 상영시간표입니다.",
-                timeList = get_movie_play_s_timetable_by_t(theaters,thName)
-            )
-
-if __name__ == '__main__':
-    app.run()
+from movie_open_api import MovieOpenAPI
 
 
 # In[169]:
@@ -76,7 +29,7 @@ def updateTimetable(theaters,thName) :
 
 
 def dbConnection() :
-    conn = pymysql.connect(host='localhost',user='root',password='ha223740',db='todays_movie', charset='utf8')
+    conn = pymysql.connect(host='localhost',user='root',password='akdlelql12#$',db='today', charset='utf8')
     #conn.query("set character_set_connection=utf8;")
     #conn.query("set character_set_server=utf8;")
     #conn.query("set character_set_client=utf8;")
@@ -590,5 +543,85 @@ def select_playMovieList_all() :
     finally :
         conn.close()
 
+movieOpenAPI = MovieOpenAPI()
 
+#선택된 영화 정보를 OpenAPI에서 가져오기
+def select_movie_info_by_movie_name(movieName):
+    movieInfo = {}
+    movieInfo["genres"] = movieOpenAPI.getMovieGenres(movieName)
+    movieInfo["directors"] = movieOpenAPI.getMovieDirectors(movieName)
+    movieInfo["actors"] = movieOpenAPI.getMovieActors(movieName, True)
+    return movieInfo
+
+#선택된 인물 정보를 OpenAPI에서 가져오기
+def select_people_info_by_people_name(peopleName, isActor):
+    peopleName = peopleName.split("-")[0]
+    peopleInfo = {}
+    peopleInfo["filmos"] = movieOpenAPI.getPeopleFilmos(peopleName, isActor, True)
+    return peopleInfo
+
+app = Flask(__name__)
+ 
+@app.route('/')
+def hello_world():
+    return render_template (
+                'theaterList.html',
+                title="영화관 리스트",
+                notice = "서울지역 영화관 목록입니다.",
+                theaterList = select_theaters_all()
+            )
+
+@app.route('/movieTable')
+def getMovieTable():
+    return render_template(
+                'movieList.html',
+                title="상영중인 영화",
+                notice = "현재 상영중인 영화 목록입니다.",
+                movieList = select_playMovieList_all()
+            )
+
+@app.route('/movieInfo/<movieName>')
+def getMovieInfo(movieName):
+    return render_template(
+                'movieInfo.html',
+                title="영화 정보",
+                notice="영화 " + movieName + " 정보입니다.",
+                movieInfo=select_movie_info_by_movie_name(movieName)
+    )
+
+@app.route('/peopleInfo/<peopleName>/<isActor>')
+def getPeopleInfo(peopleName, isActor):
+    return render_template(
+                'peopleInfo.html',
+                title="인물 정보",
+                notice="인물 " + peopleName + " 정보입니다.",
+                peopleInfo=select_people_info_by_people_name(peopleName, isActor)
+    )
+    
+@app.route('/timetable/<movie_seq>')
+def getTimetableForMovie(movie_seq):
+    #선택한 영화가 상영중인 영화관들을 가져와서 갱신시켜줘야함
+    pts = get_movie_play_s_timetable_by_s2(movie_seq)
+    for pt in pts :
+        updateTimetable(pt[1],pt[2])
+    return render_template(
+                'moviePlayList.html',
+                title="상영중인 영화관",
+                notice = "선택하신 영화가 상영중인 영화관 시간표입니다.",
+                theaterList = get_movie_play_s_timetable_by_s(movie_seq)
+            )
+
+@app.route('/timetable/<theaters>/<thName>')
+def getTimetable(theaters,thName) :
+    updateTimetable(theaters,thName)
+
+    return render_template(
+                'timetable.html',
+                title="영화시간표",
+                notice = theaters+" "+thName+"의 영화 상영시간표입니다.",
+                timeList = get_movie_play_s_timetable_by_t(theaters,thName)
+            )
+
+if __name__ == '__main__':
+    app.run()
 

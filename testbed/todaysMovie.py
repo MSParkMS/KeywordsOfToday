@@ -625,3 +625,89 @@ def getTimetable(theaters,thName) :
 if __name__ == '__main__':
     app.run()
 
+
+ts = select_theaters_seq("CGV")
+for theatercode in ts :
+    req3 = requests.get('http://www.cgv.co.kr/common/showtimes/iframeTheater.aspx?areacode=01&theatercode='+theatercode[0].replace("C-","")+'&date=20200529')
+    html3 = req3.text
+    soup3 = BeautifulSoup(html3, 'html.parser')
+    movies3 = soup3.select('body > div > div.sect-showtimes > ul > li')
+    conn = dbConnection()
+    for movie in movies3 :
+        title = movie.select_one('div > div.info-movie > a > strong').get_text().strip()
+        timetable = get_timetable(movie)
+        print(title, timetable, '\n')
+        movie_seq = select_movie_bySubject(title)
+        add_seq = get_movie_seq() + 1
+        print(movie_seq)
+        if movie_seq == 0 :
+            insert_movie(str(add_seq), "대한민국", title, "", "", "", "")
+            for time in timetable :
+                insert_moviePlay(str(add_seq), theatercode, time[0], "", "100", time[1].replace("잔여좌석","").replace("석","").replace("마감","0").replace("매진","0").replace("준비중","0"))
+        else :
+            for time in timetable :
+                insert_moviePlay(str(movie_seq), theatercode, time[0], "", "100", time[1].replace("잔여좌석","").replace("석","").replace("마감","0").replace("매진","0").replace("준비중","0"))
+
+
+ts = select_theaters_seq("LOTTE")
+for theatercode in ts :
+    url2 = "https://www.lottecinema.co.kr/LCWS/Ticketing/TicketingData.aspx"
+    dic2 = {
+        "MethodName":"GetPlaySequence",
+        "channelType":"MA",
+        "osType":"",
+        "osVersion":"",
+        "playDate":str(datetime.today().strftime("%Y-%m-%d")),
+        "cinemaID":"1|1|"+theatercode[0].replace("L-",""),
+        "representationMovieCode":""
+    }
+    parameters2 = {"paramList":str(dic2)}
+    response2 = requests.post(url2,data=parameters2).json()
+    movies_response2 = response2['PlaySeqs']['Items']
+    timetables = split_movies_by_no(movies_response2)
+    for li in timetables : #time[0] - 영화제목, time[1]는 시간표리스트
+        title = li[0]
+        timetable = li[1]
+        print(title, timetable, '\n')
+        movie_seq = select_movie_bySubject(title)
+        add_seq = get_movie_seq() + 1
+        print(movie_seq)
+        if movie_seq == 0 :
+            insert_movie(str(add_seq), "대한민국", title, "", "", "", "")
+            for time in timetable :
+                insert_moviePlay(str(add_seq), theatercode, time[0], "", "100", str(time[1]))
+        else :
+            for time in timetable :
+                insert_moviePlay(str(movie_seq), theatercode, time[0], "", "100", str(time[1]))
+
+
+ts = select_theaters_seq("MEGABOX")
+for theatercode in ts :
+    url = "https://www.megabox.co.kr/on/oh/ohc/Brch/schedulePage.do"
+    parameters = {
+                "masterType":"brch",
+                "detailType":"area",
+                "brchNo":theatercode[0].replace("M-",""),
+                "firstAt":"N",
+                "brchNo1":theatercode[0].replace("M-",""),
+                "crtDe":str(datetime.today().strftime("%Y%m%d")),
+                "playDe":str(datetime.today().strftime("%Y%m%d")),
+    }
+    response = requests.post(url,data=parameters).json()
+    movie_response2 = response['megaMap']['movieFormList']
+    timetables= split_movies_by_no_Megabox(movie_response2)
+    conn = pymysql.connect(host='localhost',user='root',password='ha223740',db='todays_movie', charset='utf8')
+    for li in timetables : #time[0] - 영화제목, time[1]는 시간표리스트
+        title = li[0]
+        timetable = li[1]
+        print(title, timetable, '\n')
+        movie_seq = select_movie_bySubject(title)
+        add_seq = get_movie_seq() + 1
+        print(movie_seq)
+        if movie_seq == 0 :
+            insert_movie(str(add_seq), "대한민국", title, "", "", "", "")
+            for time in timetable :
+                insert_moviePlay(str(add_seq), theatercode, time[0], "", "100", str(time[1]))
+        else :
+            for time in timetable :
+                insert_moviePlay(str(movie_seq), theatercode, time[0], "", "100", str(time[1]))

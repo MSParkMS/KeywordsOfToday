@@ -4,8 +4,47 @@ import json
 class MovieOpenAPI:
     def __init__(self):
         self.testKey = "5a616755c609136c99d80a46c29b66fc"
+        self.boxOfficeInfos = {}
         self.movieInfos = {}
         self.peopleInfos = {}
+
+    def gatherBoxOfficeInfos(self):
+        url = "http://www.kobis.or.kr/kobisopenapi/webservice/rest/boxoffice/searchDailyBoxOfficeList.json?"
+        url += "key=" + self.testKey
+        url += "&targetDt=20200918"
+
+        responseData = requests.get(url).text
+        result = json.loads(responseData)
+       
+        print("\n박스오피스 순위")
+        for dailyBoxOffice in result["boxOfficeResult"]["dailyBoxOfficeList"]:
+            movieName = dailyBoxOffice["movieNm"]            
+            self.boxOfficeInfos[movieName] = dailyBoxOffice
+
+            print("\n랭킹")
+            print(dailyBoxOffice["rank"])
+            print("\n랭킹 증감분")
+            print(dailyBoxOffice["rankInten"])
+            print("\n신규여부")
+            print(dailyBoxOffice["rankOldAndNew"])
+            print("\n영화제목")
+            print(dailyBoxOffice["movieNm"])
+            print("\개봉일")
+            print(dailyBoxOffice["openDt"])
+            print("\n매출액")
+            print(dailyBoxOffice["salesAmt"])
+            print("\n누적매출액")
+            print(dailyBoxOffice["salesAcc"])
+            print("\n관객수")
+            print(dailyBoxOffice["audiCnt"])
+            print("\n누적관객수")
+            print(dailyBoxOffice["audiAcc"])
+            print("\n스크린수")
+            print(dailyBoxOffice["scrnCnt"])
+            print("\n상영횟수")
+            print(dailyBoxOffice["showCnt"])
+
+        print("\n박스오피스 순위 정보가 캐슁되었습니다.")
 
     def getMovieGenres(self, movieName):
         movieInfo = self.getMovieInfo(movieName)
@@ -125,3 +164,6 @@ class MovieOpenAPI:
 
         print("\n영화인 정보가 캐슁되었습니다.")
         return self.peopleInfos[peopleName]
+
+movieOpenAPI = MovieOpenAPI()
+movieOpenAPI.gatherBoxOfficeInfos()

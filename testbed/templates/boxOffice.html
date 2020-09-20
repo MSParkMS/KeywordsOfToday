@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>{{title}}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <style type="text/css">
+      .container {
+        max-width: 1000px;
+        padding-top: 50px;
+        font-size: 16px;
+      }
+      table, th, tr, td {
+        border: 1px solid black;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <a href="/">영화관 목록</a>
+      <a href="/movieTable">상영중인 영화</a>
+      <h3><p>{{notice}}</p></h3>
+      <br>
+      <table>
+        <tr>
+          <th>순위</th>
+          <th>순위변동</th>
+          <th>영화이름</th>
+          <th>신규여부</th>
+          <th>개봉일</th>
+        </tr>
+        {% for n in boxOfficeList %}
+        <tr>
+          <td>{{boxOfficeList[n]["rank"]}}</td>
+          <td>{{boxOfficeList[n]["rankInten"]}}</td>
+          <td>{{n}}</td>
+          <td>{{boxOfficeList[n]["rankOldAndNew"]}}</td>
+          <td>{{boxOfficeList[n]["openDt"]}}</td>
+        </tr>
+        {% endfor %}
+      </table>
+    </div>
+  </body>
+</html>

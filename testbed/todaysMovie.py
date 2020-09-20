@@ -29,7 +29,7 @@ def updateTimetable(theaters,thName) :
 
 
 def dbConnection() :
-    conn = pymysql.connect(host='localhost',user='root',password='ha223740',db='todays_movie', charset='utf8')
+    conn = pymysql.connect(host='localhost',user='root',password='akdlelql12#$',db='today', charset='utf8')
     #conn.query("set character_set_connection=utf8;")
     #conn.query("set character_set_server=utf8;")
     #conn.query("set character_set_client=utf8;")
@@ -544,6 +544,7 @@ def select_playMovieList_all() :
         conn.close()
 
 movieOpenAPI = MovieOpenAPI()
+movieOpenAPI.gatherBoxOfficeInfos() #박스오피스 정보 OpenAPI에서 가져오기
 
 #선택된 영화 정보를 OpenAPI에서 가져오기
 def select_movie_info_by_movie_name(movieName):
@@ -620,6 +621,15 @@ def getTimetable(theaters,thName) :
                 title="영화시간표",
                 notice = theaters+" "+thName+"의 영화 상영시간표입니다.",
                 timeList = get_movie_play_s_timetable_by_t(theaters,thName)
+            )
+
+@app.route('/boxOffice')
+def getBoxOffice():
+    return render_template(
+                'boxOffice.html',
+                title="박스오피스",
+                notice="박스오피스 순위",
+                boxOfficeList = movieOpenAPI.boxOfficeInfos
             )
 
 if __name__ == '__main__':

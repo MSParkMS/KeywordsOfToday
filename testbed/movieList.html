@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>{{title}}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <link rel="stylesheet" href="{{url_for('static',filename='css/style.css')}}">
+  </head>
+  <body>
+    <div class="container">
+      {% extends 'top.html' %}
+      
+      {% block content %}
+      <div id="contents">
+        <div id="contents_head">
+          <h3><p>{{notice}}</p></h3>  
+        </div>
+        <div id="contents_body">
+          <ul class="theater_list">
+            {% for n in movieList %}
+              <li class="theater"><a href="/timetable/{{n[1]}}">{{n[0]}}</a></li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+      {% endblock %}
+    </div>
+  </body>
+</html>

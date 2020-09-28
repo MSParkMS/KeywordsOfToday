@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Today's Movie - 상영 시간표</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <link rel="stylesheet" href="{{url_for('static',filename='css/style.css')}}">
+  </head>
+  <body>
+    <div class="container">
+      {% extends 'top.html' %}
+      
+      {% block content %}
+        <div id="contents">
+            <div id="contents_head">
+              <h3><p>{{notice}}</p></h3> 
+            </div>
+            <div id="contents_body">
+              <ul class="movieTime_list">
+                {% for n in timeList %}
+                    <li class="movieTime">
+                    <!-- 초기 div.movieTime 생성 -->
+                       <a href="/movieInfo/{{n[2]}}">
+                        <span class="movieName">{{n[2]}}</span>
+                       </a>
+                        <em>{{n[0]}}</em>
+                        <span>{{n[1]}}석</span>
+                    </li>
+                {% endfor %}
+              </ul>
+            </div>
+        </div>
+        {% endblock %}
+    </div>
+  </body>
+</html>

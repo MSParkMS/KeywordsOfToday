@@ -1,0 +1,24 @@
+
+<html>
+  <head>
+    <title>Today's Movie</title>
+   </head>
+  <body>
+    <header>
+    <h1>
+        <a href="/">
+            <img src="/static/image/logo.png">
+        </a>
+    </h1>
+     <ul class="menuList">
+        <li class="menu"><a href="/">영화관 목록</a></li>
+        <li class="menu"><a href="/movieTable">상영중인 영화</a></li>
+        <li class="menu"><a href="/boxOffice">박스오피스 순위</a></li>
+     </ul>
+    </header>
+        
+      <main role="main">
+          {% block content %} {% endblock %}
+      </main>
+  </body>
+</html>

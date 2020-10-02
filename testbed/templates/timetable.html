@@ -1,28 +1,36 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Flask Template Example</title>
+    <title>Today's Movie - 상영 시간표</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" media="screen">
-    <style type="text/css">
-      .container {
-        max-width: 1000px;
-        padding-top: 50px;
-        font-size: 16px;
-      }
-    </style>
+    <link rel="stylesheet" href="{{url_for('static',filename='css/style.css')}}">
   </head>
   <body>
     <div class="container">
-      <a href="/">영화관 목록</a>
-      <a href="/movieTable">상영중인 영화</a>
-      <h3><p>{{notice}}</p></h3>       <!-- my_str 바인딩 -->
-      <h3><p>상영 시간표 : </p></h3>                        <!-- my_list 순회 -->
-      <ul>
-        {% for n in timeList %}
-        <li><a href="/movieInfo/{{n[2]}}">{{n[2]}} - {{n[0]}}[{{n[1]}}]</a></li>
-        {% endfor %}
-      </ul>
+      {% extends 'top.html' %}
+      
+      {% block content %}
+        <div id="contents">
+            <div id="contents_head">
+              <h3><p>{{notice}}</p></h3> 
+            </div>
+            <div id="contents_body">
+              <ul class="movieTime_list">
+                {% for n in timeList %}
+                    <li class="movieTime">
+                    <!-- 초기 div.movieTime 생성 -->
+                       <a href="/movieInfo/{{n[2]}}">
+                        <span class="movieName">{{n[2]}}</span>
+                       </a>
+                        <em>{{n[0]}}</em>
+                        <span>{{n[1]}}석</span>
+                    </li>
+                {% endfor %}
+              </ul>
+            </div>
+        </div>
+        {% endblock %}
     </div>
   </body>
 </html>

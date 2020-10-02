@@ -30,6 +30,7 @@ def updateTimetable(theaters,thName) :
 
 def dbConnection() :
     conn = pymysql.connect(host='localhost',user='root',password='akdlelql12#$',db='today', charset='utf8')
+    #conn = pymysql.connect(host='localhost',user='root',password='ha223740',db='todays_movie', charset='utf8')
     #conn.query("set character_set_connection=utf8;")
     #conn.query("set character_set_server=utf8;")
     #conn.query("set character_set_client=utf8;")
@@ -674,7 +675,7 @@ for theatercode in ts :
     parameters2 = {"paramList":str(dic2)}
     response2 = requests.post(url2,data=parameters2).json()
     movies_response2 = response2['PlaySeqs']['Items']
-    timetables = split_movies_by_no(movies_response2)
+    timetables = split_movies_by_no_Lotte(movies_response2)
     for li in timetables : #time[0] - 영화제목, time[1]는 시간표리스트
         title = li[0]
         timetable = li[1]

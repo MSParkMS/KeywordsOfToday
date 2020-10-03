@@ -127,6 +127,8 @@ body {
     }
 }
 
+
+
 /** movieInfo.html **/
 .movieInfoArea .moviePoster {
     float: right;
@@ -179,4 +181,54 @@ body {
 .movieInfoArea .actors img{
     width:111px;
     height:139px;
+}
+
+
+
+
+/** peopleinfo **/
+.filmos h4 {
+    /* float:left; */
+    font-size: 19px;
+    position: relative;
+    color: #444;
+    padding: 40px 0 10px;
+    font-weight: 400;
+    border-top: 1px solid #ddd;
+    margin-top: 15px;
+}
+
+
+/** movePlayList **/
+.movePlayList li{
+    float: left;
+    width: 29%;
+    list-style: none;
+    margin-left: -40px;
+    margin-top: 15px;
+    text-align: -webkit-center;
+}
+
+.movePlayList .theater{
+    border: 1px solid burlywood;
+    display: block;
+    text-align: center;
+    font-weight: bold;
+    margin-right: 8px;
+    width: 200px;
+}
+
+.movePlayList .movie{
+    background-color: aliceblue;
+    margin-right: 8px;
+}
+
+.movePlayList .time{
+    font-weight: bold;
+    text-decoration-line: underline;
+    margin-right: 8px;
+}
+
+.movePlayList .seats{
+    margin-right: 8px;
 }

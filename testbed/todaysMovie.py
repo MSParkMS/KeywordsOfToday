@@ -29,8 +29,8 @@ def updateTimetable(theaters,thName) :
 
 
 def dbConnection() :
-    conn = pymysql.connect(host='localhost',user='root',password='akdlelql12#$',db='today', charset='utf8')
-    #conn = pymysql.connect(host='localhost',user='root',password='ha223740',db='todays_movie', charset='utf8')
+    #conn = pymysql.connect(host='localhost',user='root',password='akdlelql12#$',db='today', charset='utf8')
+    conn = pymysql.connect(host='localhost',user='root',password='ha223740',db='todays_movie', charset='utf8')
     #conn.query("set character_set_connection=utf8;")
     #conn.query("set character_set_server=utf8;")
     #conn.query("set character_set_client=utf8;")
@@ -602,14 +602,15 @@ def getPeopleInfo(peopleName, isActor):
     
 @app.route('/timetable/<movie_seq>')
 def getTimetableForMovie(movie_seq):
+    movieName = get_movieSubject_by_seq(movie_seq)
     #선택한 영화가 상영중인 영화관들을 가져와서 갱신시켜줘야함
     pts = get_movie_play_s_timetable_by_s2(movie_seq)
     for pt in pts :
         updateTimetable(pt[1],pt[2])
     return render_template(
                 'moviePlayList.html',
-                title="상영중인 영화관",
-                notice = "선택하신 영화가 상영중인 영화관 시간표입니다.",
+                title="Today's Movie -"+movieName,
+                notice = movieName+" 상영 시간표입니다.",
                 theaterList = get_movie_play_s_timetable_by_s(movie_seq)
             )
 

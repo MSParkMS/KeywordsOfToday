@@ -232,3 +232,32 @@ body {
 .movePlayList .seats{
     margin-right: 8px;
 }
+
+
+/** boxOffice **/
+table{
+    width: 100%;
+}
+
+table th{
+    background-color: white;
+}
+
+table th, td{
+    text-align: center;
+}
+.boxOffice .rank {
+    width: 10%;
+ }
+
+.boxOffice .rankUD {
+    width: 10%;
+ }
+
+.boxOffice .NO {
+    width: 15%;
+ }
+
+.boxOffice .date {
+    width: 15%;
+ }

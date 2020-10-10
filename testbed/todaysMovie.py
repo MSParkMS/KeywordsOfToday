@@ -47,10 +47,11 @@ def get_timetable(moive):
     timetables = movie.select('div > div.type-hall > div.info-timetable > ul > li')
     #print(timetables)
     for timetable in timetables:
+        link = timetable.select_one('a')["href"]
         time = timetable.select_one('em').get_text()        
         seat = timetable.select_one('span').get_text()
         #print(time,seat)
-        tuple = (time,seat)
+        tuple = (time,seat,link)
         tuples.append(tuple)
     return tuples
 
@@ -142,14 +143,15 @@ def select_theaters_seq(THEATERS) :
 # In[9]:
 
 
-def insert_moviePlay(MOVIE_SEQ, THEATERS_SEQ, START_TIME, RUNNING_TIME, SEATS, SEATS_LEFT) :
+def insert_moviePlay(MOVIE_SEQ, THEATERS_SEQ, START_TIME, RUNNING_TIME, SEATS, SEATS_LEFT,LINK) :
     playSeq = findPlaySeq(MOVIE_SEQ, THEATERS_SEQ, START_TIME)
+    print(LINK)
     if(playSeq == 0) :
         conn = dbConnection()
         try :
             with conn.cursor() as curs :
-                sql = "insert into movie_play (MOVIE_SEQ, THEATERS_SEQ, START_TIME, RUNNING_TIME, SEATS, SEATS_LEFT) values (%s,%s,%s,%s,"+SEATS+","+SEATS_LEFT+")"
-                curs.execute(sql,(MOVIE_SEQ, THEATERS_SEQ, START_TIME, RUNNING_TIME))
+                sql = "insert into movie_play (MOVIE_SEQ, THEATERS_SEQ, START_TIME, RUNNING_TIME, SEATS, SEATS_LEFT, LINK) values (%s,%s,%s,%s,"+SEATS+","+SEATS_LEFT+",%s)"
+                curs.execute(sql,(MOVIE_SEQ, THEATERS_SEQ, START_TIME, RUNNING_TIME,LINK))
             conn.commit()
             print("입력 성공!")
         finally :
@@ -330,12 +332,12 @@ def get_movie_play_s_timetable_by_s2(movie_seq) :
 
 
 #선택한 영화관에서 상영중인 영화를 알고싶은데 시간표도 같이 가져와주라
-def get_movie_play_s_timetable_by_t(theaters, theaterName) :
+def get_movie_play_s_timetable_by_t(theaters, theaterName) : 
     theaterSeq = get_seq_by_theaterName(theaters, theaterName)
     conn = dbConnection()
     try :
         with conn.cursor() as curs :
-            sql = 'select A.START_TIME, A.SEATS_LEFT, subject, theaters, th_name from movie_play A, THEATERS B, MOVIE C WHERE A.THEATERS_SEQ = B.THEATERS_SEQ AND A.MOVIE_SEQ = C.MOVIE_SEQ AND A.theaters_seq = %s AND date_format(REGIST_DATE,"%%Y-%%m-%%d") = CURDATE()  AND START_TIME > curtime() ORDER BY SUBJECT, START_TIME'
+            sql = 'select A.START_TIME, A.SEATS_LEFT, subject, theaters, A.LINK, th_name from movie_play A, THEATERS B, MOVIE C WHERE A.THEATERS_SEQ = B.THEATERS_SEQ AND A.MOVIE_SEQ = C.MOVIE_SEQ AND A.theaters_seq = %s AND date_format(REGIST_DATE,"%%Y-%%m-%%d") = CURDATE()  AND START_TIME > curtime() ORDER BY SUBJECT, START_TIME'
             curs.execute(sql,(theaterSeq))
             rs = curs.fetchall()
             return rs
@@ -360,13 +362,16 @@ def updateTimetableCGV(theaters,thName) :
         timetables = movie.select('div > div.type-hall > div.info-timetable > ul > li')
         #print(timetables)
         for timetable in timetables:
+            link = '#'
+            if timetable.select_one('a') is not None :
+                link = timetable.select_one('a')["href"]
             time = timetable.select_one('em').get_text()        
             seat = timetable.select_one('span').get_text()
-            #print(time,seat)
-            tuple = (time,seat)
+            #print(link)
+            tuple = (time,seat,link)
             tuples.append(tuple)
         #timetable = get_timetable(movie)
-        print(title, tuples, '\n')
+        #print(title, tuples, '\n')
         
         movie_seq = select_movie_bySubject(title)
         add_seq = get_movie_seq() + 1
@@ -374,10 +379,10 @@ def updateTimetableCGV(theaters,thName) :
         if movie_seq == 0 :
             insert_movie(str(add_seq), "대한민국", title, "", "", "", "")
             for time in tuples :
-                insert_moviePlay(str(add_seq), theatercode, time[0], "", "100", time[1].replace("잔여좌석","").replace("석","").replace("마감","0").replace("매진","0").replace("준비중","0"))
+                insert_moviePlay(str(add_seq), theatercode, time[0], "", "100", time[1].replace("잔여좌석","").replace("석","").replace("마감","0").replace("매진","0").replace("준비중","0"),time[2])
         else :
             for time in tuples :
-                insert_moviePlay(str(movie_seq), theatercode, time[0], "", "100", time[1].replace("잔여좌석","").replace("석","").replace("마감","0").replace("매진","0").replace("준비중","0"))
+                insert_moviePlay(str(movie_seq), theatercode, time[0], "", "100", time[1].replace("잔여좌석","").replace("석","").replace("마감","0").replace("매진","0").replace("준비중","0"),time[2])
 
 
 def split_movies_by_no_Lotte(response) :
@@ -439,13 +444,14 @@ def updateTimetableLOTTE(theaters,thName) :
         movie_seq = select_movie_bySubject(title)
         add_seq = get_movie_seq() + 1
         print(movie_seq)
+        link = ""
         if movie_seq == 0 :
             insert_movie(str(add_seq), "대한민국", title, "", "", "", "")
             for time in timetable :
-                insert_moviePlay(str(add_seq), theatercode, time[0], "", "100", str(time[1]))
+                insert_moviePlay(str(add_seq), theatercode, time[0], "", "100", str(time[1]),link)
         else :
             for time in timetable :
-                insert_moviePlay(str(movie_seq), theatercode, time[0], "", "100", str(time[1]))
+                insert_moviePlay(str(movie_seq), theatercode, time[0], "", "100", str(time[1]),link)
 
 
 def split_movies_by_no_Megabox(response) :
@@ -506,13 +512,14 @@ def updateTimetableMEGABOX(theaters,thName) :
         movie_seq = select_movie_bySubject(title)
         add_seq = get_movie_seq() + 1
         print(movie_seq)
+        link = "";
         if movie_seq == 0 :
             insert_movie(str(add_seq), "대한민국", title, "", "", "", "")
             for time in timetable :
-                insert_moviePlay(str(add_seq), theatercode, time[0], "", "100", str(time[1]))
+                insert_moviePlay(str(add_seq), theatercode, time[0], "", "100", str(time[1]),link)
         else :
             for time in timetable :
-                insert_moviePlay(str(movie_seq), theatercode, time[0], "", "100", str(time[1]))
+                insert_moviePlay(str(movie_seq), theatercode, time[0], "", "100", str(time[1]),link)
 
 
 def select_theaters_all() :

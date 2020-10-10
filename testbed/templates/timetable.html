@@ -20,11 +20,13 @@
                 {% for n in timeList %}
                     <li class="movieTime">
                     <!-- 초기 div.movieTime 생성 -->
-                       <a href="/movieInfo/{{n[2]}}">
+                       <a href="/movieInfo/{{n[2]}}" class="movieName_link">
                         <span class="movieName">{{n[2]}}</span>
                        </a>
-                        <em>{{n[0]}}</em>
-                        <span class="left_seats">{{n[1]}}석</span>
+                        <a href="#" onclick="movie_reserv('{{n[3]}}','{{n[4]}}')" class="movieReserv_link">
+                            <em>{{n[0]}}</em>
+                            <span class="left_seats">{{n[1]}}석</span>
+                        </a>
                     </li>
                 {% endfor %}
               </ul>

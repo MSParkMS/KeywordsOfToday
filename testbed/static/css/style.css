@@ -100,7 +100,15 @@ body {
     padding: 17px;
 }
 
-.movieTime_list .movieTime a {
+.movieTime_list .movieTime a:hover {
+    text-decoration: none;
+}
+
+.movieTime_list .movieTime a:visited {
+    text-decoration: none;
+}
+
+.movieTime_list .movieTime .movieName_link {
     display: block;
     float: left;
     width : 48%;
@@ -108,14 +116,6 @@ body {
     padding: 2px;
     font-weight: bold;
     color: brown;
-}
-
-.movieTime_list .movieTime a:hover {
-    text-decoration: none;
-}
-
-.movieTime_list .movieTime a:visited {
-    text-decoration: none;
 }
 
 .movieTime_list .movieTime:hover {

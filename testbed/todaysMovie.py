@@ -635,7 +635,7 @@ def getBoxOffice():
             )
 
 if __name__ == '__main__':
-    app.run()
+    app.run(host='0.0.0.0', debug=True, port=80)
 
 
 ts = select_theaters_seq("CGV")

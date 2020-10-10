@@ -90,31 +90,66 @@ body {
     float: left;
     list-style: none;
     position: relative;
-    width: 23%;
+    width: 29%;
     height: 100px;
     margin: 2px;
     padding-top: 5px;
-    border: 1px solid #cbcabe;
+    border: 1px solid burlywood;
     line-height: 1.4;
-    text-align: center;
+    text-align: left;
     padding: 17px;
 }
 
+.movieTime_list .movieTime a {
+    display: block;
+    float: left;
+    width : 48%;
+    height: 100%;
+    padding: 2px;
+    font-weight: bold;
+    color: brown;
+}
+
+.movieTime_list .movieTime a:hover {
+    text-decoration: none;
+}
+
+.movieTime_list .movieTime a:visited {
+    text-decoration: none;
+}
+
 .movieTime_list .movieTime:hover {
-    background-color: darkgrey;
+    background-color: antiquewhite;
 }
 
 .movieTime_list .movieTime em {
+    width: 48%;
+    float: left;
     display: block;
     font-family: verdana, sans-serif;
-    font-size: 12px;
+    font-size: 14px;
     font-weight: bold;
+    padding: 5px;
+    text-align: center;
 }
 
-.movieTime_list .movieTime span {
+.movieTime_list .movieTime .left_seats {
     display: inline-block;
-    font-size: 12px;
+    font-size: 15px;
+    font-weight: bold;
     text-overflow: ellipsis;
+    padding: 10px;
+    width: 48%;
+    text-align: center;
+}
+
+
+.movieTime_list .movieTime .movieTime {
+    display: inline-block;
+    font-size: 15px;
+    font-weight: bold;
+    text-overflow: ellipsis;
+    padding: 0px !important;
 }
 
 @media screen and (max-width:640px){

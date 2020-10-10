@@ -1,7 +1,12 @@
 import requests
 import json
 
-testKey = "5a616755c609136c99d80a46c29b66fc"
+from urllib import parse
+
+with open('config.json', 'r') as f:
+    config = json.load(f)
+'''
+testKey = config['KOBIS_API_KEY']
 
 keyArg = "key="
 targetDtArg = "targetDt="
@@ -67,6 +72,9 @@ for movieListInfo in movieListInfos:
     print("\n영화제목")
     print(movieInfo["movieNm"])
 
+    print("\n영화코드")
+    print(movieListInfo["movieCd"])
+
     print("\n장르")
     for genres in movieInfo["genres"]:
         print(genres["genreNm"])
@@ -96,3 +104,25 @@ for actor in movieOpenAPI.getMovieActors("명량"):
     print("\n" + actor + " 필모")
     print(movieOpenAPI.getPeopleFilmos(actor, True, True))
 """
+'''
+
+testKey = config['TMDB_API_KEY']
+
+query = {
+         'language' : 'ko-KR',
+         'query' : '설국열차',
+         'page' : 1
+        }
+
+url = "https://api.themoviedb.org/3/search/movie?api_key=" + testKey + "&"
+url += parse.urlencode(query, encoding='UTF-8', doseq=True)
+
+print(url)
+
+responseData = requests.get(url).text
+result = json.loads(responseData)
+
+print(result["results"][0]["id"])
+print(result["results"][0]["title"])
+print(result["results"][0]["overview"])
+print(result["results"][0]["poster_path"])

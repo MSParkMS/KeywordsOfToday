@@ -444,7 +444,7 @@ def updateTimetableLOTTE(theaters,thName) :
         movie_seq = select_movie_bySubject(title)
         add_seq = get_movie_seq() + 1
         print(movie_seq)
-        link = ""
+        link = "#"
         if movie_seq == 0 :
             insert_movie(str(add_seq), "대한민국", title, "", "", "", "")
             for time in timetable :

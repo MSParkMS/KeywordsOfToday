@@ -29,7 +29,7 @@ def updateTimetable(theaters,thName) :
 
 
 def dbConnection() :
-    #conn = pymysql.connect(host='localhost',user='root',password='akdlelql12#$',db='today', charset='utf8')
+    #conn = pymysql.connect(host='localhost',user='root',password='akdlelql12#$',db='todays_movie', charset='utf8')
     conn = pymysql.connect(host='localhost',user='root',password='ha223740',db='todays_movie', charset='utf8')
     #conn.query("set character_set_connection=utf8;")
     #conn.query("set character_set_server=utf8;")
@@ -638,7 +638,8 @@ def getBoxOffice():
                 'boxOffice.html',
                 title="박스오피스",
                 notice="박스오피스 순위",
-                boxOfficeList = movieOpenAPI.boxOfficeInfos
+                boxOfficeList = movieOpenAPI.boxOfficeInfos,
+                movieInfos = movieOpenAPI.movieInfos
             )
 
 if __name__ == '__main__':

@@ -481,7 +481,8 @@ def get_time_table_Megabox(movies):
     for movie in movies :
         time = movie["playStartTime"]
         seats = movie["restSeatCnt"]
-        tuple = (time,seats)
+        playSchdlNo = movie["playSchdlNo"]
+        tuple = (time,seats,playSchdlNo)
         tuples.append(tuple)
     return tuples
 
@@ -512,14 +513,13 @@ def updateTimetableMEGABOX(theaters,thName) :
         movie_seq = select_movie_bySubject(title)
         add_seq = get_movie_seq() + 1
         print(movie_seq)
-        link = "";
         if movie_seq == 0 :
             insert_movie(str(add_seq), "대한민국", title, "", "", "", "")
             for time in timetable :
-                insert_moviePlay(str(add_seq), theatercode, time[0], "", "100", str(time[1]),link)
+                insert_moviePlay(str(add_seq), theatercode, time[0], "", "100", str(time[1]),time[2])
         else :
             for time in timetable :
-                insert_moviePlay(str(movie_seq), theatercode, time[0], "", "100", str(time[1]),link)
+                insert_moviePlay(str(movie_seq), theatercode, time[0], "", "100", str(time[1]),time[2])
 
 
 def select_theaters_all() :

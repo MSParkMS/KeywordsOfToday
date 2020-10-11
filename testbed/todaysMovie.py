@@ -332,12 +332,12 @@ def get_movie_play_s_timetable_by_s2(movie_seq) :
 
 
 #선택한 영화관에서 상영중인 영화를 알고싶은데 시간표도 같이 가져와주라
-def get_movie_play_s_timetable_by_t(theaters, theaterName) : 
+def get_movie_play_s_timetable_by_t(theaters, theaterName) :
     theaterSeq = get_seq_by_theaterName(theaters, theaterName)
     conn = dbConnection()
     try :
         with conn.cursor() as curs :
-            sql = 'select A.START_TIME, A.SEATS_LEFT, subject, theaters, A.LINK, th_name from movie_play A, THEATERS B, MOVIE C WHERE A.THEATERS_SEQ = B.THEATERS_SEQ AND A.MOVIE_SEQ = C.MOVIE_SEQ AND A.theaters_seq = %s AND date_format(REGIST_DATE,"%%Y-%%m-%%d") = CURDATE()  AND START_TIME > curtime() ORDER BY SUBJECT, START_TIME'
+            sql = 'select A.START_TIME, A.SEATS_LEFT, subject, theaters, A.LINK, A.THEATERS_SEQ, th_name from movie_play A, THEATERS B, MOVIE C WHERE A.THEATERS_SEQ = B.THEATERS_SEQ AND A.MOVIE_SEQ = C.MOVIE_SEQ AND A.theaters_seq = %s AND date_format(REGIST_DATE,"%%Y-%%m-%%d") = CURDATE()  AND START_TIME > curtime() ORDER BY SUBJECT, START_TIME'
             curs.execute(sql,(theaterSeq))
             rs = curs.fetchall()
             return rs

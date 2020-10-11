@@ -157,7 +157,7 @@ def insert_moviePlay(MOVIE_SEQ, THEATERS_SEQ, START_TIME, RUNNING_TIME, SEATS, S
         finally :
             conn.close()
     else :
-        seatsUpdate(playSeq, SEATS_LEFT)
+        seatsUpdate(playSeq, SEATS_LEFT, LINK)
 
 
 # In[10]:
@@ -183,12 +183,12 @@ def findPlaySeq(MOVIE_SEQ, THEATERS_SEQ, START_TIME) :
 # In[11]:
 
 
-def seatsUpdate(PLAY_SEQ, SEATS_LEFT) :
+def seatsUpdate(PLAY_SEQ, SEATS_LEFT, LINK) :
     conn = dbConnection()
     try :
         with conn.cursor() as curs :
-            sql = 'update movie_play SET SEATS_LEFT = %s where PLAY_SEQ = %s'
-            rs = curs.execute(sql,(SEATS_LEFT,PLAY_SEQ))
+            sql = 'update movie_play SET SEATS_LEFT = %s, LINK = %s where PLAY_SEQ = %s'
+            rs = curs.execute(sql,(SEATS_LEFT,LINK,PLAY_SEQ))
         conn.commit()
         print("갱신 성공!")
     finally :

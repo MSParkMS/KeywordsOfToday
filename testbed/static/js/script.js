@@ -15,7 +15,7 @@ function movie_reserv(theather, link, theaterCd){
     if(theather == 'LOTTE'){
         alert("롯데시네마는 상영관, 영화 자동선택서비스를 제공하지 않습니다. 예매사이트로 이동합니다.");
     }
-    if(link == '#' && theaterCd == '#'){
+    if(theather != 'LOTTE' && link == '#'){
         alert("좌석이 없거나 예매서비스가 불가능한 상영관, 영화관 입니다.");
         return;
     }

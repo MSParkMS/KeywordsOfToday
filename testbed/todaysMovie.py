@@ -163,7 +163,7 @@ def insert_moviePlay(MOVIE_SEQ, THEATERS_SEQ, START_TIME, RUNNING_TIME, SEATS, S
 # In[10]:
 
 
-def findPlaySeq(MOVIE_SEQ, THEATERS_SEQ, START_TIME) : 
+def findPlaySeq(MOVIE_SEQ, THEATERS_SEQ, START_TIME) :
     conn = dbConnection()
     seq = 0
     try :

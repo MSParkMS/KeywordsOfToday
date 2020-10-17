@@ -12,14 +12,34 @@
         </a>
     </h1>
      <ul class="menuList">
-        <li class="menu"><a href="/">영화관 목록</a></li>
-        <li class="menu"><a href="/movieTable">상영중인 영화</a></li>
-        <li class="menu"><a href="/boxOffice">박스오피스 순위</a></li>
+        <li class="menu"><a href="/">예매</a></li>
+        <li class="menu"><a href="/movieTable">상영영화</a></li>
+        <li class="menu"><a href="/movieSearch">영화찾기</a></li>
+        <li class="menu"><a href="/movieNews">News</a></li>
+        <li class="menu"><a href="/boxOffice">Box Office</a></li>
      </ul>
     </header>
         
       <main role="main">
           {% block content %} {% endblock %}
       </main>
+      
+      <div id="bottom">
+            <div class="bottom_container">
+                <div class="wrap-policy">
+                    <ul class="clear-fix">
+                        <li>개인정보보호정책</li>
+                        <li>저작권보호정책</li>
+                        <li>이메일무단수집거부</li>
+                    </ul>
+                </div>
+                <div class="address">
+                    (08221) 서울시 구로구 경인로 445 동양미래대학교 TEL 02-2610-1700 / FAX 02-2688-5494
+                </div>
+                <div class="copyright">
+                    COPYRIGHT 2019 Dongyang Mirae University. ALL RIGHTS RESERVED
+                </div>
+            </div>      
+      </div>
   </body>
 </html>

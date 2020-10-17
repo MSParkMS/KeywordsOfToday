@@ -140,7 +140,7 @@ def select_theaters_seq(THEATERS) :
         conn.close()
 
 
-# In[9]:
+# In[9]: 
 
 
 def insert_moviePlay(MOVIE_SEQ, THEATERS_SEQ, START_TIME, RUNNING_TIME, SEATS, SEATS_LEFT,LINK) :
@@ -183,7 +183,7 @@ def findPlaySeq(MOVIE_SEQ, THEATERS_SEQ, START_TIME) :
 # In[11]:
 
 
-def seatsUpdate(PLAY_SEQ, SEATS_LEFT, LINK) :
+def seatsUpdate(PLAY_SEQ, SEATS_LEFT, LINK) : 
     conn = dbConnection()
     try :
         with conn.cursor() as curs :

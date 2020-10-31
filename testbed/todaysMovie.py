@@ -13,6 +13,9 @@ from bs4 import BeautifulSoup
 from io import StringIO
 from flask import Flask, render_template
 from movie_open_api import MovieOpenAPI
+import time
+from urllib.parse import quote_plus
+from selenium import webdriver
 
 
 # In[169]:
@@ -569,6 +572,27 @@ def select_people_info_by_people_name(peopleName, isActor):
     peopleInfo["filmos"] = movieOpenAPI.getPeopleFilmos(peopleName, isActor, True)
     return peopleInfo
 
+#플랫폼 영화검색
+def movieSearch (search) :
+    user_input = quote_plus(search)
+    driver.get('https://www.justwatch.com/kr/%EA%B2%80%EC%83%89?q='+user_input)
+    time.sleep(2)
+    html = driver.page_source
+    soup = BeautifulSoup(html, 'html.parser')
+    searchMovies = soup.select('#base > div.jw-container > div > div.tabs-inner > ion-tab > ion-content > div.title-list > div > div > div.title-list-row > ion-grid > div > ion-row')
+    searchMovies[0].select_one('.title-list-row__row__title').get_text()
+    movieList = []
+    for movie in searchMovies :
+        monetizations = movie.select_one('.monetizations')
+        stream = monetizations.select('.price-comparison__grid__row--stream .price-comparison__grid__row__element')
+        rental = monetizations.select('.price-comparison__grid__row--rent .price-comparison__grid__row__element')
+        buy = monetizations.select('.price-comparison__grid__row--buy .price-comparison__grid__row__element')
+        movieName = movie.select_one('.title-list-row__row__title').get_text()
+        poster = movie.select_one('.title-poster').select_one('.title-poster__image > source')['srcset'].split(',')[0]
+        tuple = (movieName, poster,stream,rental,buy)
+        movieList.append(tuple)
+    return movieList
+
 app = Flask(__name__)
  
 @app.route('/')
@@ -640,6 +664,23 @@ def getBoxOffice():
                 notice="박스오피스 순위",
                 boxOfficeList = movieOpenAPI.boxOfficeInfos,
                 movieInfos = movieOpenAPI.movieInfos
+            )
+
+@app.route('/movieSearch')
+def getMovieSearchListPage():
+    return render_template(
+                'movieSearch.html',
+                title="영화검색",
+                notice="검색한 영화를 볼 수 있는 플랫폼을 찾아줍니다.",
+            )
+
+@app.route('/movieSearch/<searchWord>')
+def getMovieSearchList():
+    return render_template(
+                'movieSearch.html',
+                title="영화검색",
+                notice="검색한 영화를 볼 수 있는 플랫폼을 찾아줍니다.",
+                movieSearchList = movieSearch(searchWord)
             )
 
 if __name__ == '__main__':

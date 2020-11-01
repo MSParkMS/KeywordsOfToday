@@ -11,7 +11,7 @@ from datetime import datetime
 #from openpyxl import load_workbook
 from bs4 import BeautifulSoup
 from io import StringIO
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 from movie_open_api import MovieOpenAPI
 import time
 from urllib.parse import quote_plus
@@ -49,13 +49,16 @@ def get_timetable(moive):
     tuples = []
     timetables = movie.select('div > div.type-hall > div.info-timetable > ul > li')
     #print(timetables)
-    for timetable in timetables:
-        link = timetable.select_one('a')["href"]
-        time = timetable.select_one('em').get_text()        
-        seat = timetable.select_one('span').get_text()
-        #print(time,seat)
-        tuple = (time,seat,link)
-        tuples.append(tuple)
+    for timetable in timetables :
+        if timetable is not None :
+            link = None
+            if timetable.select_one('a') is not None :
+                link = timetable.select_one('a')["href"]
+            time = timetable.select_one('em').get_text()        
+            seat = timetable.select_one('span').get_text()
+            #print(time,seat)
+            tuple = (time,seat,link)
+            tuples.append(tuple)
     return tuples
 
 
@@ -359,8 +362,9 @@ def updateTimetableCGV(theaters,thName) :
     movies3 = soup3.select('body > div > div.sect-showtimes > ul > li')
     #print(movies3)
     for movie in movies3 :
-        title = movie.select_one('div > div.info-movie > a > strong').get_text().strip()
-        
+        title = None
+        if movie.select_one('div > div.info-movie > a > strong') is not None :
+            title = movie.select_one('div > div.info-movie > a > strong').get_text().strip()
         tuples = []
         timetables = movie.select('div > div.type-hall > div.info-timetable > ul > li')
         #print(timetables)
@@ -415,9 +419,10 @@ def get_movie_no_list_Lotte(response) :
 def get_time_table_Lotte(movies):
     tuples = []
     for movie in movies :
+        link = None
         time = movie["StartTime"]
         seats = movie["BookingSeatCount"]
-        tuple = (time,seats)
+        tuple = (time,seats,link)
         tuples.append(tuple)
     return tuples
 
@@ -574,6 +579,7 @@ def select_people_info_by_people_name(peopleName, isActor):
 
 #플랫폼 영화검색
 def movieSearch (search) :
+    driver = webdriver.Chrome('chromedriver')
     user_input = quote_plus(search)
     driver.get('https://www.justwatch.com/kr/%EA%B2%80%EC%83%89?q='+user_input)
     time.sleep(2)
@@ -591,7 +597,41 @@ def movieSearch (search) :
         poster = movie.select_one('.title-poster').select_one('.title-poster__image > source')['srcset'].split(',')[0]
         tuple = (movieName, poster,stream,rental,buy)
         movieList.append(tuple)
-    return movieList
+        
+    #데이터 가공
+    resultArray = []
+    for t in movieList :
+        print("<"+t[0]+">")
+        st = []
+        br = []
+        by = []
+        print("스트리밍")
+        for s in t[2] :
+            image = s.select_one('.price-comparison__grid__row__icon')['src']
+            price = s.select_one('.price-comparison__grid__row__price').get_text()
+            link = s.select_one('.price-comparison__grid__row__element__icon > a')['href']
+            tuple2 = (image,price,link)
+            st.append(tuple2)
+        print("대여")
+        for s in t[3] :
+            image = s.select_one('.price-comparison__grid__row__icon')['src']
+            price = s.select_one('.price-comparison__grid__row__price').get_text()
+            link = s.select_one('.price-comparison__grid__row__element__icon > a')['href']
+            tuple2 = (image,price,link)
+            br.append(tuple2)
+        print("구매")
+        for s in t[4] :
+            image = s.select_one('.price-comparison__grid__row__icon')['src']
+            price = s.select_one('.price-comparison__grid__row__price').get_text()
+            link = s.select_one('.price-comparison__grid__row__element__icon > a')['href']
+            tuple2 = (image,price,link)
+            by.append(tuple2)
+        tuple = (t[0],t[1],st,br,by)
+        resultArray.append(tuple)
+    
+    return resultArray
+
+
 
 app = Flask(__name__)
  
@@ -671,21 +711,24 @@ def getMovieSearchListPage():
     return render_template(
                 'movieSearch.html',
                 title="영화검색",
-                notice="검색한 영화를 볼 수 있는 플랫폼을 찾아줍니다.",
+                notice="검색한 영화를 볼 수 있는 플랫폼을 찾아줍니다."
             )
 
-@app.route('/movieSearch/<searchWord>')
+@app.route('/movieSearch', methods=['POST'])
 def getMovieSearchList():
     return render_template(
                 'movieSearch.html',
                 title="영화검색",
                 notice="검색한 영화를 볼 수 있는 플랫폼을 찾아줍니다.",
-                movieSearchList = movieSearch(searchWord)
+                searchWord = request.form['searchWord'],
+                movieSearchList = movieSearch(request.form['searchWord']) 
             )
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', debug=True, port=80)
 
+
+    
 
 ts = select_theaters_seq("CGV")
 for theatercode in ts :
@@ -695,7 +738,9 @@ for theatercode in ts :
     movies3 = soup3.select('body > div > div.sect-showtimes > ul > li')
     conn = dbConnection()
     for movie in movies3 :
-        title = movie.select_one('div > div.info-movie > a > strong').get_text().strip()
+        title = None
+        if movie.select_one('div > div.info-movie > a > strong') is not None :
+            title = movie.select_one('div > div.info-movie > a > strong').get_text().strip()
         timetable = get_timetable(movie)
         print(title, timetable, '\n')
         movie_seq = select_movie_bySubject(title)
@@ -704,12 +749,12 @@ for theatercode in ts :
         if movie_seq == 0 :
             insert_movie(str(add_seq), "대한민국", title, "", "", "", "")
             for time in timetable :
-                insert_moviePlay(str(add_seq), theatercode, time[0], "", "100", time[1].replace("잔여좌석","").replace("석","").replace("마감","0").replace("매진","0").replace("준비중","0"))
+                insert_moviePlay(str(add_seq), theatercode, time[0], "", "100", time[1].replace("잔여좌석","").replace("석","").replace("마감","0").replace("매진","0").replace("준비중","0"),time[2])
         else :
             for time in timetable :
-                insert_moviePlay(str(movie_seq), theatercode, time[0], "", "100", time[1].replace("잔여좌석","").replace("석","").replace("마감","0").replace("매진","0").replace("준비중","0"))
+                insert_moviePlay(str(movie_seq), theatercode, time[0], "", "100", time[1].replace("잔여좌석","").replace("석","").replace("마감","0").replace("매진","0").replace("준비중","0"),time[2])
 
-
+ 
 ts = select_theaters_seq("LOTTE")
 for theatercode in ts :
     url2 = "https://www.lottecinema.co.kr/LCWS/Ticketing/TicketingData.aspx"
@@ -736,10 +781,10 @@ for theatercode in ts :
         if movie_seq == 0 :
             insert_movie(str(add_seq), "대한민국", title, "", "", "", "")
             for time in timetable :
-                insert_moviePlay(str(add_seq), theatercode, time[0], "", "100", str(time[1]))
+                insert_moviePlay(str(add_seq), theatercode, time[0], "", "100", str(time[1]),time[2])
         else :
             for time in timetable :
-                insert_moviePlay(str(movie_seq), theatercode, time[0], "", "100", str(time[1]))
+                insert_moviePlay(str(movie_seq), theatercode, time[0], "", "100", str(time[1]),time[2])
 
 
 ts = select_theaters_seq("MEGABOX")
@@ -768,7 +813,7 @@ for theatercode in ts :
         if movie_seq == 0 :
             insert_movie(str(add_seq), "대한민국", title, "", "", "", "")
             for time in timetable :
-                insert_moviePlay(str(add_seq), theatercode, time[0], "", "100", str(time[1]))
+                insert_moviePlay(str(add_seq), theatercode, time[0], "", "100", str(time[1]),time[2])
         else :
             for time in timetable :
-                insert_moviePlay(str(movie_seq), theatercode, time[0], "", "100", str(time[1]))
+                insert_moviePlay(str(movie_seq), theatercode, time[0], "", "100", str(time[1]),time[2])

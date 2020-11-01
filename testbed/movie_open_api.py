@@ -1,6 +1,7 @@
 import requests
 import json
 
+from datetime import date, timedelta
 from urllib import parse
 
 class MovieOpenAPI:
@@ -15,9 +16,12 @@ class MovieOpenAPI:
         self.peopleInfos = {}
 
     def gatherBoxOfficeInfos(self):
+        today = date.today()
+        yesterday = today - timedelta(days = 1)
+        targetDt = yesterday.strftime("%Y%m%d")
         query = {
                     'key' : self.kobis_api_key,
-                    'targetDt' : 20200918
+                    'targetDt' : targetDt
                 }
 
         url = "http://www.kobis.or.kr/kobisopenapi/webservice/rest/boxoffice/searchDailyBoxOfficeList.json?"
@@ -125,9 +129,53 @@ class MovieOpenAPI:
         responseData = requests.get(url).text
         result = json.loads(responseData)
 
-        self.movieInfos[movieName]["overview"] = result["results"][0]["overview"]
-        self.movieInfos[movieName]["poster_path"] = result["results"][0]["poster_path"]
-        self.movieInfos[movieName]["poster300"] = self.getMoviePosterPath(movieName)
+        if len(result["results"]) > 0:
+            self.movieInfos[movieName]["overview"] = result["results"][0]["overview"]
+            self.movieInfos[movieName]["poster_path"] = result["results"][0]["poster_path"]
+            self.movieInfos[movieName]["poster300"] = self.getMoviePosterPath(movieName)
+        else:
+            # try english name
+            queryEng = {
+                    'api_key' : self.tmdb_api_key,
+                    'language' : 'ko-KR',
+                    'query' : self.movieInfos[movieName]["movieNmEn"],
+                    'page' : 1
+            }
+
+            url = "https://api.themoviedb.org/3/search/movie?"
+            url += parse.urlencode(queryEng, encoding='UTF-8', doseq=True)
+
+            responseData = requests.get(url).text
+            result = json.loads(responseData)
+
+            if len(result["results"]) > 0:
+                self.movieInfos[movieName]["overview"] = result["results"][0]["overview"]
+                self.movieInfos[movieName]["poster_path"] = result["results"][0]["poster_path"]
+                self.movieInfos[movieName]["poster300"] = self.getMoviePosterPath(movieName)
+            else:
+                # trim the words
+                movieNameWithoutWords = movieName
+                removeWords = ['파이널컷']
+                for removeWord in removeWords:
+                    movieNameWithoutWords = movieNameWithoutWords.replace(removeWord, '')
+                
+                queryWithoutWords = {
+                    'api_key' : self.tmdb_api_key,
+                    'language' : 'ko-KR',
+                    'query' : movieNameWithoutWords,
+                    'page' : 1
+                }
+
+                url = "https://api.themoviedb.org/3/search/movie?"
+                url += parse.urlencode(queryWithoutWords, encoding='UTF-8', doseq=True)
+
+                responseData = requests.get(url).text
+                result = json.loads(responseData)
+
+                if len(result["results"]) > 0:
+                    self.movieInfos[movieName]["overview"] = result["results"][0]["overview"]
+                    self.movieInfos[movieName]["poster_path"] = result["results"][0]["poster_path"]
+                    self.movieInfos[movieName]["poster300"] = self.getMoviePosterPath(movieName)
 
         # print("\n영화제목")
         # print(movieInfo["movieNm"])
@@ -140,9 +188,9 @@ class MovieOpenAPI:
         # for directors in movieInfo["directors"]:
             # print(directors["peopleNm"])
 
-        # print("\n배우")
-        # for actors in movieInfo["actors"]:
-            # print(actors["peopleNm"])
+        print("\n배우")
+        for actors in movieInfo["actors"]:
+            print(actors["peopleNm"])
 
         # print("\n줄거리")
         # print(self.movieInfos[movieName]["overview"])

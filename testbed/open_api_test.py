@@ -108,9 +108,10 @@ for actor in movieOpenAPI.getMovieActors("명량"):
 
 testKey = config['TMDB_API_KEY']
 
+'''
 query = {
          'language' : 'ko-KR',
-         'query' : '설국열차',
+         'query' : '다만 악에서 구하소서 파이널컷',
          'page' : 1
         }
 
@@ -122,7 +123,43 @@ print(url)
 responseData = requests.get(url).text
 result = json.loads(responseData)
 
+print(result)
+
 print(result["results"][0]["id"])
 print(result["results"][0]["title"])
 print(result["results"][0]["overview"])
 print(result["results"][0]["poster_path"])
+'''
+
+'''
+query = {
+            'api_key' : testKey,
+            'language' : 'ko-KR',
+            'query' : '성동일',
+            'page' : 1
+        }
+
+url = "https://api.themoviedb.org/3/search/person?"
+url += parse.urlencode(query, encoding='UTF-8', doseq=True)
+
+responseData = requests.get(url).text
+result = json.loads(responseData)
+
+print(result)
+
+
+query = {
+            'api_key' : testKey,
+            'language' : 'ko-KR',
+            'query' : '데이비드 맥기니스',
+            'page' : 1
+        }
+
+url = "https://api.themoviedb.org/3/search/person?"
+url += parse.urlencode(query, encoding='UTF-8', doseq=True)
+
+responseData = requests.get(url).text
+result = json.loads(responseData)
+
+print(result)
+'''

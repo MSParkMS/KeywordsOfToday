@@ -79,9 +79,9 @@ class MovieOpenAPI:
         movieInfo = self.getMovieInfo(movieName)
         actors = []
         for actor in movieInfo["actors"]:
-            actorInfo = actor["peopleNm"]
+            actorInfo = {'name': actor["peopleNm"], 'profile': self.getProfilePath(actor["peopleNm"])}
             if withCastName and len(actor["cast"]) > 0:
-                actorInfo += "-" + actor["cast"]
+                actorInfo["name"] += "-" + actor["cast"]
             actors.append(actorInfo)
         return actors
 
@@ -188,9 +188,9 @@ class MovieOpenAPI:
         # for directors in movieInfo["directors"]:
             # print(directors["peopleNm"])
 
-        print("\n배우")
-        for actors in movieInfo["actors"]:
-            print(actors["peopleNm"])
+        # print("\n배우")
+        # for actors in movieInfo["actors"]:
+            # print(actors["peopleNm"])
 
         # print("\n줄거리")
         # print(self.movieInfos[movieName]["overview"])
@@ -205,7 +205,7 @@ class MovieOpenAPI:
         return "https://image.tmdb.org/t/p/w" + str(width) + self.getMovieInfo(movieName)["poster_path"]
 
     def getPeopleFilmos(self, peopleName, isActor, withPartName=False):
-        peopleInfo = self.getPeopleInfo(peopleName, isActor)
+        peopleInfo = self.getPeopleInfo(peopleName)
         filmos = []
         for filmo in peopleInfo["filmos"]:
             filmoInfo = filmo["movieNm"]
@@ -214,7 +214,7 @@ class MovieOpenAPI:
             filmos.append(filmoInfo)
         return filmos
 
-    def getPeopleInfo(self, peopleName, isActor):
+    def getPeopleInfo(self, peopleName, isActor=True):
         if peopleName in self.peopleInfos:
             return self.peopleInfos[peopleName]
 
@@ -263,5 +263,45 @@ class MovieOpenAPI:
         # print("\n담당업무")
         # print(peopleInfo["repRoleNm"])
 
+        query = {
+                    'api_key' : self.tmdb_api_key,
+                    'language' : 'ko-KR',
+                    'query' : peopleInfo["peopleNm"],
+                    'page' : 1
+                }
+
+        url = "https://api.themoviedb.org/3/search/person?"
+        url += parse.urlencode(query, encoding='UTF-8', doseq=True)
+
+        responseData = requests.get(url).text
+        result = json.loads(responseData)
+
+        if len(result["results"]) > 0:
+            self.peopleInfos[peopleName]["profile_path"] = result["results"][0]["profile_path"]
+
+            query = {
+                    'api_key' : self.tmdb_api_key,
+                    'language' : 'ko-KR'
+            }
+
+            url = "https://api.themoviedb.org/3/person/" +  str(result["results"][0]["id"]) + "?"
+            url += parse.urlencode(query, encoding='UTF-8', doseq=True)
+
+            responseData = requests.get(url).text
+            result = json.loads(responseData)
+
+            self.peopleInfos[peopleName]["birthday"] = result["birthday"]
+            self.peopleInfos[peopleName]["deathday"] = result["deathday"]
+            self.peopleInfos[peopleName]["biography"] = result["biography"]
+
         print("\n영화인 정보가 캐슁되었습니다.")
         return self.peopleInfos[peopleName]
+
+    def getProfilePath(self, peopleName, width=300):
+        if "profile_path" in self.getPeopleInfo(peopleName):
+            if self.getPeopleInfo(peopleName)["profile_path"] is None:
+                return "/static/image/default_profile.png"
+            else:
+                return "https://image.tmdb.org/t/p/w" + str(width) + self.getPeopleInfo(peopleName)["profile_path"]
+        else:
+            return "/static/image/default_profile.png"

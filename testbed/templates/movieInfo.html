@@ -24,7 +24,7 @@
                 <div class="movieInfoArea">
                     <div class="moviePoster">
                         <a href="#">
-                            <img src="/static/image/국제수사포스터.jpg"/>
+                            <img src="{{movieInfo['poster']}}"/>
                         </a>
                     </div>
                     <div class="genres">
@@ -54,10 +54,10 @@
                         <ul>
                             {% for a in movieInfo["actors"] %}
                             <li>
-                                <a href="/peopleInfo/{{a}}/1">
-                                    <img src="/static/image/곽도원.png"/>
+                                <a href="/peopleInfo/{{a['name']}}/1">
+                                    <img src="{{a['profile']}}"/>
                                 </a>
-                                <a href="/peopleInfo/{{a}}/1">{{a}}</a>
+                                <a href="/peopleInfo/{{a['name']}}/1">{{a['name']}}</a>
                             </li>
                             {% endfor %}
                         </ul>

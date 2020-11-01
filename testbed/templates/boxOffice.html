@@ -24,22 +24,19 @@
                     <table>
                         <tr>
                             <th class="rank">순위</th>
-                            <th class="rankUD">순위변동</th>
                             <th class="poster">포스터</th>
                             <th class="movieName">영화이름</th>
                             <th class="overview">줄거리</th>
                             <th class="date">개봉일</th>
-                            <th class="NO">신규여부</th>
                         </tr>
                         {% for n in boxOfficeList %}
                         <tr>
                             <td>{{boxOfficeList[n]["rank"]}}</td>
-                            <td>{{boxOfficeList[n]["rankInten"]}}</td>
                             <td><img src="{{movieInfos[n]['poster300']}}" width=100 height=200></td>
-                            <td>{{n}}</td>
+                            <td><a href="/movieInfo/{{n}}" class="movieName_link">
+                                <span class="movieName">{{n}}</span></a></td>
                             <td>{{movieInfos[n]["overview"]}}</td>
                             <td>{{boxOfficeList[n]["openDt"]}}</td>
-                            <td>{{boxOfficeList[n]["rankOldAndNew"]}}</td>
                         </tr>
                         {% endfor %}
                     </table>

@@ -32,7 +32,6 @@ def updateTimetable(theaters,thName) :
 
 
 def dbConnection() :
-    #conn = pymysql.connect(host='localhost',user='root',password='akdlelql12#$',db='todays_movie', charset='utf8')
     conn = pymysql.connect(host='localhost',user='root',password='ha223740',db='todays_movie', charset='utf8')
     #conn.query("set character_set_connection=utf8;")
     #conn.query("set character_set_server=utf8;")
@@ -567,13 +566,19 @@ def select_movie_info_by_movie_name(movieName):
     movieInfo = {}
     movieInfo["genres"] = movieOpenAPI.getMovieGenres(movieName)
     movieInfo["directors"] = movieOpenAPI.getMovieDirectors(movieName)
-    movieInfo["actors"] = movieOpenAPI.getMovieActors(movieName, True)
+    movieInfo["actors"] = movieOpenAPI.getMovieActors(movieName, False)
+    movieInfo["poster"] = movieOpenAPI.getMoviePosterPath(movieName)
     return movieInfo
 
 #선택된 인물 정보를 OpenAPI에서 가져오기
 def select_people_info_by_people_name(peopleName, isActor):
     peopleName = peopleName.split("-")[0]
     peopleInfo = {}
+    peopleInfo["profile"] = movieOpenAPI.getProfilePath(peopleName)
+    if movieOpenAPI.getPeopleInfo(peopleName)["birthday"] is None:
+        peopleInfo["birthday"] = "None"
+    else:
+        movieOpenAPI.getPeopleInfo(peopleName)["birthday"]
     peopleInfo["filmos"] = movieOpenAPI.getPeopleFilmos(peopleName, isActor, True)
     return peopleInfo
 

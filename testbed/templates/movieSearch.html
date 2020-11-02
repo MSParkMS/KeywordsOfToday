@@ -1,76 +1,30 @@
 <!DOCTYPE html>
 <html>
-
-<head>
+  <head>
     <title>{{title}}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" media="screen">
     <link rel="stylesheet" href="{{url_for('static',filename='css/style.css')}}">
-</head>
-
-<body>
+  </head>
+  <body>
     <div class="container">
-        {% extends 'top.html' %}
-
-        {% block content %}
-        <div id="contents">
-            <div id="contents_head">
-                <h3>
-                    <p>{{notice}}</p>
-                </h3>
-                <h5>
+      {% extends 'top.html' %}
+      
+      {% block content %}
+      <div id="contents">
+        <div id="contents_head">
+          <h3><p>{{notice}}</p></h3>
+          <h5>
                     * 검색하신 영화가 상영되고 있는 플랫폼입니다.
-                </h5>
-            </div>
-            <div id="contents_body">
-                <div class="searchForm">
-                    <form id="searchForm" method="post" action="/movieSearch">
-                        <input type="text" name="searchWord" value="{{searchWord}}" />
-                        <input type="submit" value="검색" />
-                        "{{searchWord}}"이 포함된 영화 검색 결과입니다.
-                    </form>
-                </div>
-                <div id="searchResult">
-                    <ul class="movie">
-                        {% for movie in movieSearchList %}
-                        <li>
-                            <div class="movieThumb">
-                                <img src="{{movie[1]}}" />
-                            </div>
-                            <div class="title">
-                                {{movie[0]}}
-                            </div>
-                            <div class="play">
-                                <div class="st">
-                                   스트리밍 : 
-                                    {% for a in movie[2] %}
-                                    <br><img src="{{a[0]}}" />
-                                    <a href="{{a[2]}}">{{a[1]}}</a>
-                                    {% endfor %}
-                                </div>
-                                <div class="br">
-                                   대여 : 
-                                    {% for a in movie[3] %}
-                                    <br><img src="{{a[0]}}" />
-                                    <a href="{{a[2]}}">{{a[1]}}</a>
-                                    {% endfor %}
-                                </div>
-                                <div class="by">
-                                   구매 :
-                                    {% for a in movie[4] %}
-                                    <br><img src="{{a[0]}}" />
-                                    <a href="{{a[2]}}">{{a[1]}}</a>
-                                    {% endfor %}
-                                </div>
-                            </div>
-                        </li>
-                        {% endfor %}
-                    </ul>
-                </div>
-            </div>
+          </h5>
         </div>
-        {% endblock %}
+        <div id="contents_body">
+          <ul class="theater_list">
+            
+          </ul>
+        </div>
+      </div>
+      {% endblock %}
     </div>
-</body>
-
+  </body>
 </html>

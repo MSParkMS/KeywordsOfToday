@@ -645,7 +645,6 @@ def movieSearch (search) :
     return resultArray
 
 
-
 app = Flask(__name__)
  
 @app.route('/')

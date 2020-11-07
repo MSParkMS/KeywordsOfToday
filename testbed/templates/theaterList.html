@@ -1,30 +1,65 @@
 <!DOCTYPE html>
 <html>
-  <head>
+
+<head>
     <title>Today's Movie</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" media="screen">
     <link rel="stylesheet" href="{{url_for('static',filename='css/style.css')}}">
-  </head>
-  <body>
+</head>
+
+<body>
     <div class="container">
-      {% extends 'top.html' %}
-      
-      {% block content %}
-      <div id="contents">
-        <div id="contents_head">
-          <h3><p>{{notice}}</p></h3>
-          <h5><p>* 영화관을 선택하시면 상영시간표가 나타납니다.</p></h5>
+        {% extends 'top.html' %}
+
+        {% block content %}
+        <div id="contents">
+            <div id="contents_head">
+                <div id="area_div">
+                    <ul class="area_list">
+                        <li class="area"><a href="/">서울</a></li>
+                        <li class="area"><a href="#">경기</a></li>
+                        <li class="area"><a href="#">인천</a></li>
+                        <li class="area"><a href="#">강원</a></li>
+                        <li class="area"><a href="#">대전/충청</a></li>
+                        <li class="area"><a href="#">대구</a></li>
+                        <li class="area"><a href="#">부산/울산</a></li>
+                        <li class="area"><a href="#">경상</a></li>
+                        <li class="area"><a href="#">광주/전라/제주</a></li>
+                    </ul>
+                </div>
+                <div id="notice">
+                    <p>{{notice}}</p>
+                </div>
+                <div id="info">
+                    <p>* 영화관을 선택하시면 상영시간표가 나타납니다.</p>
+                </div>
+            </div>
+            <div id="contents_body">
+                <ul class="theater_list">
+                    <div id="cgv_list">
+                        <span class="title">CGV</span>
+                        {% for n in CGVList %}
+                        <li class="theater"><a href="/timetable/{{n[1]}}/{{n[3]}}">{{n[1]}} {{n[3]}}</a></li>
+                        {% endfor %}
+                    </div>
+                    <div id="lotte_list">
+                        <span class="title">LOTTE CINEMA</span>
+                        {% for n in LOTTEList %}
+                        <li class="theater"><a href="/timetable/{{n[1]}}/{{n[3]}}">{{n[1]}} {{n[3]}}</a></li>
+                        {% endfor %}
+                    </div>
+                    <div id="megabox_list">
+                        <span class="title">MEGABOX</span>
+                        {% for n in MEGABOXList %}
+                        <li class="theater"><a href="/timetable/{{n[1]}}/{{n[3]}}">{{n[1]}} {{n[3]}}</a></li>
+                        {% endfor %}
+                    </div>
+                </ul>
+            </div>
         </div>
-        <div id="contents_body">
-          <ul class="theater_list">
-            {% for n in theaterList %}
-           <li class="theater"><a href="/timetable/{{n[1]}}/{{n[3]}}">{{n[1]}} {{n[3]}}</a></li>
-            {% endfor %}
-          </ul>
-        </div>
-      </div>
-      {% endblock %}
+        {% endblock %}
     </div>
-  </body>
+</body>
+
 </html>

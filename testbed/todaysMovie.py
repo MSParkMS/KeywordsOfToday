@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 # coding: utf-8
-
 # In[ ]:
 
 import requests
@@ -20,7 +19,6 @@ from selenium import webdriver
 
 # In[169]:
 
-
 def updateTimetable(theaters,thName) :
     if (theaters == "CGV") :
         updateTimetableCGV(theaters,thName)
@@ -28,7 +26,6 @@ def updateTimetable(theaters,thName) :
         updateTimetableLOTTE(theaters,thName)
     if (theaters == "MEGABOX") :
         updateTimetableMEGABOX(theaters,thName)
-
 
 
 def dbConnection() :
@@ -542,6 +539,17 @@ def select_theaters_all() :
     finally :
         conn.close()
 
+# CGV 지역, 영화관 목록
+def select_theaters(theaters) :
+    conn = dbConnection()
+    try :
+        with conn.cursor() as curs :
+            sql = "select * from theaters where theaters = %s order by TH_NAME ASC"
+            curs.execute(sql,(theaters))
+            rs = curs.fetchall()
+        return rs
+    finally :
+        conn.close()
 
 #현재 상영중인 영화 목록 가져오기
 #select distinct(B.subject) from movie_play A, movie B where A.MOVIE_SEQ = B.MOVIE_SEQ;
@@ -646,7 +654,9 @@ def hello_world():
                 'theaterList.html',
                 title="영화관 리스트",
                 notice = "서울지역 영화관 목록입니다.",
-                theaterList = select_theaters_all()
+                CGVList = select_theaters('CGV'),
+                LOTTEList = select_theaters('LOTTE'),
+                MEGABOXList = select_theaters('MEGABOX')
             )
 
 @app.route('/movieTable')
@@ -733,7 +743,6 @@ if __name__ == '__main__':
     app.run(host='0.0.0.0', debug=True, port=80)
 
 
-    
 
 ts = select_theaters_seq("CGV")
 for theatercode in ts :

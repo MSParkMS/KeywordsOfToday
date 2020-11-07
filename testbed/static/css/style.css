@@ -4,27 +4,28 @@
 body {
     background-color: #fdfcf0;
 }
+
 .container {
     max-width: 1000px;
     padding-top: 50px;
     font-size: 16px;
 }
 
-#contents #contents_head{
-    color : brown;
+#contents #contents_head {
+    color: brown;
     font-weight: 400;
-    font-family: NanumBarunGothic,Dotum,'돋움',sans-serif;
+    font-family: NanumBarunGothic, Dotum, '돋움', sans-serif;
     background-color: beige;
     padding: 2px;
 }
 
-#contents #contents_body{
+#contents #contents_body {
     padding: 10px;
-    display: flex;
+    display: inline-table;
 }
 
 .theater_list {
-	font-size: 100%;
+    font-size: 100%;
     margin: 0;
     padding: 0;
     border: 0;
@@ -34,27 +35,29 @@ body {
 }
 
 .theater_list .theater {
-	float:left;
-	list-style: none;
+    float: left;
+    list-style: none;
     border-radius: 4px;
     border: 1px solid #ddd;
     cursor: pointer;
-        width: 25%;
+    width: 25%;
     background: linear-gradient(to bottom, rgba(255, 255, 255, 1) 0%, rgba(248, 248, 248, 1) 100%);
     font-weight: bold;
     transition: 0.3s;
 }
-.theater_list .theater:hover{border: 1px solid #e63c3c;  transition: 0.3s; box-sizing: border-box;}
 
-.theater_list .theater a:hover{
-    
-
+.theater_list .theater:hover {
+    border: 1px solid #e63c3c;
+    transition: 0.3s;
+    box-sizing: border-box;
 }
 
+.theater_list .theater a:hover {}
+
 .theater_list .theater a {
-	color: #FA8258;
-	text-decoration: none;
-	display: block;
+    color: #FA8258;
+    text-decoration: none;
+    display: block;
     position: relative;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -62,13 +65,13 @@ body {
     height: 33px;
     width: 100%;
     padding: 8px 14px 5px;
-        
+
 
 }
 
 .menuList {
-    margin-left: -40px; 
-    overflow : hidden;
+    margin-left: -40px;
+    overflow: hidden;
 }
 
 .menuList .menu {
@@ -84,8 +87,8 @@ body {
 
 .menu a {
     display: block;
-	color: #6d270f;
-	text-decoration: none;
+    color: #6d270f;
+    text-decoration: none;
 }
 
 .menuList .menu:hover {
@@ -117,7 +120,7 @@ body {
 .movieTime_list .movieTime .movieName_link {
     display: block;
     float: left;
-    width : 48%;
+    width: 48%;
     height: 100%;
     padding: 2px;
     font-weight: bold;
@@ -161,20 +164,66 @@ body {
     padding: 0px !important;
 }
 
-@media screen and (max-width:640px){
+@media screen and (max-width:640px) {
     .theater_list .theater {
         width: 50%;
     }
-    
+
     .movieTime_list .movieTime {
         width: 46%;
     }
 }
 
+div#lotte_list {
+    float: left;
+}
 
+div#megabox_list {
+    float: left;
+}
+
+.theater_list .title {
+    font-weight: bold;
+    width: 100%;
+    float: left;
+    margin-top: 20px;
+    margin-bottom: 5px;
+    background: burlywood;
+    padding: 5px;
+}
+
+#area_div {
+    width: 100%;
+    height: 50px;
+}
+
+#notice {
+    font-weight: bold;
+    margin-left: 15px;
+}
+
+#info {
+    margin-left: 15px;
+}
+
+.area_list .area {
+    list-style: none;
+    float: left;
+    padding: 10px;
+}
+
+.area_list .area:hover {
+    background : burlywood;
+}
+
+.area_list .area a {
+    color: black;
+    font-weight: bold;
+    display: block;
+}
 
 /** movieInfo.html **/
-.movieInfoArea{
+.movieInfoArea {
     width: 100%;
 }
 
@@ -187,7 +236,7 @@ body {
     max-height: 290px;
 }
 
-.moviePoster img{
+.moviePoster img {
     width: 100%;
     height: 100%;
 }
@@ -204,31 +253,32 @@ body {
 }
 
 .movieInfoArea .genres {
-     width:79%;
+    width: 79%;
 }
 
 .movieInfoArea .directores {
-     width:79%;
-}
-.movieInfoArea .actors {
-     width:79%;
+    width: 79%;
 }
 
-.movieInfoArea .actors ul{
-    float:none;
+.movieInfoArea .actors {
+    width: 79%;
+}
+
+.movieInfoArea .actors ul {
+    float: none;
     margin-bottom: -4px;
 }
 
-.movieInfoArea .actors ul li{
+.movieInfoArea .actors ul li {
     list-style: none;
     float: left;
     width: 111px;
     height: 195px;
 }
 
-.movieInfoArea .actors img{
-    width:111px;
-    height:139px;
+.movieInfoArea .actors img {
+    width: 111px;
+    height: 139px;
 }
 
 /** peopleinfo **/
@@ -249,7 +299,7 @@ body {
     margin-left: -40px;
 }
 
-.movePlayList li{
+.movePlayList li {
     float: left;
     /* width: 29%; */
     list-style: none;
@@ -258,7 +308,7 @@ body {
     text-align: -webkit-center;
 }
 
-.movePlayList .theater{
+.movePlayList .theater {
     border: 1px solid burlywood;
     display: block;
     text-align: center;
@@ -270,78 +320,80 @@ body {
     white-space: nowrap;
 }
 
-.movePlayList .movie{
+.movePlayList .movie {
     background-color: aliceblue;
     margin-right: 8px;
 }
 
-.movePlayList .time{
+.movePlayList .time {
     font-weight: bold;
     text-decoration-line: underline;
     margin-right: 8px;
 }
 
-.movePlayList .seats{
+.movePlayList .seats {
     margin-right: 8px;
 }
 
 
 /** boxOffice **/
-table{
+table {
     width: 100%;
 }
 
-table th{
+table th {
     background-color: white;
 }
 
-table th, td{
+table th,
+td {
     text-align: center;
 }
+
 .boxOffice .rank {
     width: 10%;
- }
+}
 
 .boxOffice .rankUD {
     width: 10%;
- }
+}
 
 .boxOffice .NO {
     width: 15%;
- }
+}
 
 .boxOffice .date {
     width: 15%;
- }
+}
 
 #bottom {
     padding: 25px 0;
     background: #afaf89;
-    color:#fff;
+    color: #fff;
 }
 
-#bottom .bottom_container{
+#bottom .bottom_container {
     padding: 0 30px;
 }
 
-#bottom .bottom_container .wrap-policy .clear-fix{
+#bottom .bottom_container .wrap-policy .clear-fix {
     margin-left: -40px;
     overflow: hidden;
     outline: none;
 }
 
-#bottom .bottom_container .wrap-policy .clear-fix ul{
+#bottom .bottom_container .wrap-policy .clear-fix ul {
     width: 100%;
     white-space: nowrap;
 }
 
-#bottom .bottom_container .wrap-policy .clear-fix li{
+#bottom .bottom_container .wrap-policy .clear-fix li {
     display: inline-block;
     position: relative;
     padding: 0 15px;
 }
 
-#bottom .bottom_container .wrap-policy .clear-fix li+li:before{
+#bottom .bottom_container .wrap-policy .clear-fix li + li:before {
     content: '';
     display: block;
     position: absolute;
@@ -352,7 +404,7 @@ table th, td{
     top: 3px;
 }
 
-#bottom .bottom_container .wrap-policy .clear-fix li:first-child{
+#bottom .bottom_container .wrap-policy .clear-fix li:first-child {
     color: #63ddfb;
     padding-left: 0;
 }

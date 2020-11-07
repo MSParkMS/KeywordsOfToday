@@ -122,6 +122,9 @@ body {
     padding: 2px;
     font-weight: bold;
     color: brown;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: normal;
 }
 
 .movieTime_list .movieTime:hover {
@@ -171,6 +174,10 @@ body {
 
 
 /** movieInfo.html **/
+.movieInfoArea{
+    width: 100%;
+}
+
 .movieInfoArea .moviePoster {
     float: right;
     position: relative;
@@ -224,9 +231,6 @@ body {
     height:139px;
 }
 
-
-
-
 /** peopleinfo **/
 .filmos h4 {
     /* float:left; */
@@ -241,11 +245,15 @@ body {
 
 
 /** movePlayList **/
+.movePlayList {
+    margin-left: -40px;
+}
+
 .movePlayList li{
     float: left;
-    width: 29%;
+    /* width: 29%; */
     list-style: none;
-    margin-left: -40px;
+    /* margin-left: -40px; */
     margin-top: 15px;
     text-align: -webkit-center;
 }
@@ -256,7 +264,10 @@ body {
     text-align: center;
     font-weight: bold;
     margin-right: 8px;
-    width: 200px;
+    width: 229px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .movePlayList .movie{

@@ -1,6 +1,8 @@
 import requests
 from bs4 import BeautifulSoup
+from selenium import webdriver
 
+'''
 source = requests.get("https://movie.naver.com/movie/sdb/rank/rmovie.nhn").text
 soup = BeautifulSoup(source, "html.parser")
 
@@ -40,3 +42,4 @@ for movie in movies:
     for actor in actors:
         print(actor.get_text())
         print(actor["href"])
+'''

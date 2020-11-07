@@ -567,6 +567,7 @@ def select_playMovieList_all() :
         conn.close()
 
 movieOpenAPI = MovieOpenAPI()
+movieOpenAPI.loadDatas()
 movieOpenAPI.gatherBoxOfficeInfos() #박스오피스 정보 OpenAPI에서 가져오기
 
 #선택된 영화 정보를 OpenAPI에서 가져오기
@@ -740,7 +741,6 @@ def getMovieSearchList():
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', debug=True, port=80)
-
 
 
 ts = select_theaters_seq("CGV")

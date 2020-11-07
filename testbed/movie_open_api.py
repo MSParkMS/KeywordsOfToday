@@ -199,6 +199,7 @@ class MovieOpenAPI:
         # print(self.getMoviePosterPath(movieName))
 
         print("\n영화 정보가 캐슁되었습니다.")
+        self.saveMovieInfos()
         return self.movieInfos[movieName]
 
     def getMoviePosterPath(self, movieName, width=300):
@@ -295,6 +296,7 @@ class MovieOpenAPI:
             self.peopleInfos[peopleName]["biography"] = result["biography"]
 
         print("\n영화인 정보가 캐슁되었습니다.")
+        self.savePeopleInfos()
         return self.peopleInfos[peopleName]
 
     def getProfilePath(self, peopleName, width=300):
@@ -305,3 +307,24 @@ class MovieOpenAPI:
                 return "https://image.tmdb.org/t/p/w" + str(width) + self.getPeopleInfo(peopleName)["profile_path"]
         else:
             return "/static/image/default_profile.png"
+
+    def saveMovieInfos(self):
+         with open("movieinfo_file.json", "w") as jsonfile:
+            json.dump(self.movieInfos, jsonfile)
+
+    def savePeopleInfos(self):
+        with open("peopleInfo_file.json", "w") as jsonfile:
+            json.dump(self.peopleInfos, jsonfile)
+
+    def loadDatas(self):
+        try:
+            with open("movieinfo_file.json", "r") as jsonfile:
+                self.movieInfos = json.load(jsonfile)
+        except:
+            print('there is no movieinfo_file.json')
+
+        try:
+            with open("peopleInfo_file.json", "r") as jsonfile:
+                self.peopleInfos = json.load(jsonfile)
+        except:
+            print("there is no peopleInfo_file.json")

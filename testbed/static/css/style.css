@@ -22,6 +22,7 @@ body {
 #contents #contents_body {
     padding: 10px;
     display: inline-table;
+    width: 970px;
 }
 
 .theater_list {
@@ -413,7 +414,10 @@ td {
 #searchResult {
     margin-top: 20px;
     width:950px;
-    
+}
+
+#searchResult .movie li{
+    height: 250px;    
 }
 
 .movie {
@@ -423,6 +427,11 @@ td {
 
 .movie .movieThumb {
     float: left;
+}
+
+.movie .play img{
+    width:50px;
+    height: 50px;
 }
 
 .st{

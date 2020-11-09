@@ -25,9 +25,12 @@
                         {% for n in theaterList %}
                         <li>
                             <span class="theater">{{n[3]}} {{n[4]}}</span>
-                            <a href="#" onclick="movie_reserv('{{n[3]}}','{{n[4]}}','{{n[5]}}')" class="movieReserv_link">
-                                시작 : <span class="time">{{n[0]}}</span>
-                            </a>
+                            시작 :
+                            <span class="time">
+                                <a href="#" onclick="movie_reserv('{{n[3]}}','{{n[5]}}','{{n[6]}}')" class="movieReserv_link">
+                                    {{n[0]}}
+                                </a>
+                            </span>
                             <span class="seats">좌석수 : {{n[1]}}</span>
                         </li>
                         {% endfor %}

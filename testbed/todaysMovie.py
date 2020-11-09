@@ -309,7 +309,7 @@ def get_movie_play_s_timetable_by_s(movie_seq) :
     conn = dbConnection()
     try :
         with conn.cursor() as curs :
-            sql = 'select A.START_TIME, A.SEATS_LEFT, subject, theaters, th_name from movie_play A, THEATERS B, MOVIE C WHERE A.THEATERS_SEQ = B.THEATERS_SEQ AND A.MOVIE_SEQ = C.MOVIE_SEQ AND A.movie_seq = %s AND date_format(REGIST_DATE,"%%Y-%%m-%%d") = CURDATE()  AND START_TIME > curtime() ORDER BY SUBJECT, START_TIME'
+            sql = 'select A.START_TIME, A.SEATS_LEFT, subject, theaters, th_name, A.LINK, A.THEATERS_SEQ from movie_play A, THEATERS B, MOVIE C WHERE A.THEATERS_SEQ = B.THEATERS_SEQ AND A.MOVIE_SEQ = C.MOVIE_SEQ AND A.movie_seq = %s AND date_format(REGIST_DATE,"%%Y-%%m-%%d") = CURDATE()  AND START_TIME > curtime() ORDER BY SUBJECT, START_TIME'
             curs.execute(sql,(movie_seq))
             rs = curs.fetchall()
             return rs
@@ -325,7 +325,7 @@ def get_movie_play_s_timetable_by_s2(movie_seq) :
     conn = dbConnection()
     try :
         with conn.cursor() as curs :
-            sql = 'select distinct(A.THEATERS_SEQ), theaters, th_name from movie_play A, THEATERS B, MOVIE C WHERE A.THEATERS_SEQ = B.THEATERS_SEQ AND A.MOVIE_SEQ = C.MOVIE_SEQ AND A.movie_seq = %s AND date_format(REGIST_DATE,"%%Y-%%m-%%d") = CURDATE()  AND START_TIME > curtime() ORDER BY SUBJECT, START_TIME'
+            sql = 'select distinct(A.THEATERS_SEQ), theaters, th_name from movie_play A, THEATERS B, MOVIE C WHERE A.THEATERS_SEQ = B.THEATERS_SEQ AND A.MOVIE_SEQ = C.MOVIE_SEQ AND A.movie_seq = %s AND date_format(REGIST_DATE,"%%Y-%%m-%%d") = CURDATE()  AND START_TIME > curtime() ORDER BY th_name'
             curs.execute(sql,(movie_seq))
             rs = curs.fetchall()
             return rs
@@ -592,6 +592,8 @@ def select_people_info_by_people_name(peopleName, isActor):
 
 #플랫폼 영화검색
 def movieSearch (search) :
+    resultArray = []
+    movieList = []
     driver = webdriver.Chrome('chromedriver')
     user_input = quote_plus(search)
     driver.get('https://www.justwatch.com/kr/%EA%B2%80%EC%83%89?q='+user_input)
@@ -599,20 +601,22 @@ def movieSearch (search) :
     html = driver.page_source
     soup = BeautifulSoup(html, 'html.parser')
     searchMovies = soup.select('#base > div.jw-container > div > div.tabs-inner > ion-tab > ion-content > div.title-list > div > div > div.title-list-row > ion-grid > div > ion-row')
+    if len(searchMovies) == 0 :
+        driver.close()
+        return resultArray
     searchMovies[0].select_one('.title-list-row__row__title').get_text()
-    movieList = []
     for movie in searchMovies :
         monetizations = movie.select_one('.monetizations')
-        stream = monetizations.select('.price-comparison__grid__row--stream .price-comparison__grid__row__element')
-        rental = monetizations.select('.price-comparison__grid__row--rent .price-comparison__grid__row__element')
-        buy = monetizations.select('.price-comparison__grid__row--buy .price-comparison__grid__row__element')
-        movieName = movie.select_one('.title-list-row__row__title').get_text()
-        poster = movie.select_one('.title-poster').select_one('.title-poster__image > source')['srcset'].split(',')[0]
-        tuple = (movieName, poster,stream,rental,buy)
-        movieList.append(tuple)
+        if monetizations is not None :
+            stream = monetizations.select('.price-comparison__grid__row--stream .price-comparison__grid__row__element')
+            rental = monetizations.select('.price-comparison__grid__row--rent .price-comparison__grid__row__element')
+            buy = monetizations.select('.price-comparison__grid__row--buy .price-comparison__grid__row__element')
+            movieName = movie.select_one('.title-list-row__row__title').get_text()
+            poster = movie.select_one('.title-poster').select_one('.title-poster__image > source')['srcset'].split(',')[0]
+            tuple = (movieName, poster,stream,rental,buy)
+            movieList.append(tuple)
         
     #데이터 가공
-    resultArray = []
     for t in movieList :
         print("<"+t[0]+">")
         st = []
@@ -642,6 +646,7 @@ def movieSearch (search) :
         tuple = (t[0],t[1],st,br,by)
         resultArray.append(tuple)
     
+    driver.close()
     return resultArray
 
 
@@ -688,6 +693,28 @@ def getPeopleInfo(peopleName, isActor):
 @app.route('/timetable/<movie_seq>')
 def getTimetableForMovie(movie_seq):
     movieName = get_movieSubject_by_seq(movie_seq)
+    return render_template(
+                'theaterListForMovie.html',
+                title="Today's Movie -"+movieName,
+                notice = movieName+" 상영 시간표입니다.",
+                movie_seq = movie_seq,
+                theaterList = get_movie_play_s_timetable_by_s(movie_seq)
+            )
+
+@app.route('/timetable/theater/<movie_seq>')
+def getTimetableTheaterForMovie(movie_seq):
+    movieName = get_movieSubject_by_seq(movie_seq)
+    return render_template(
+                'theaterListForMovie2.html',
+                title="Today's Movie -"+movieName,
+                notice = movieName+"이(가) 상영중인 영화관 목록입니다.",
+                movie_seq = movie_seq,
+                theaterList = get_movie_play_s_timetable_by_s2(movie_seq)
+            )
+
+@app.route('/timetable/all/<movie_seq>')
+def getTimetableTheaterForMovieAll(movie_seq):
+    movieName = get_movieSubject_by_seq(movie_seq)
     #선택한 영화가 상영중인 영화관들을 가져와서 갱신시켜줘야함
     pts = get_movie_play_s_timetable_by_s2(movie_seq)
     for pt in pts :
@@ -696,6 +723,7 @@ def getTimetableForMovie(movie_seq):
                 'moviePlayList.html',
                 title="Today's Movie -"+movieName,
                 notice = movieName+" 상영 시간표입니다.",
+                movie_seq = movie_seq,
                 theaterList = get_movie_play_s_timetable_by_s(movie_seq)
             )
 

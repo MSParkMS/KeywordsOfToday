@@ -207,7 +207,7 @@ class MovieOpenAPI:
         print("\n영화 정보가 캐슁되었습니다.")
         self.saveMovieInfos()
 
-        getMovieReviews(movieInfo["movieNm"])
+        self.getMovieReviews(movieInfo["movieNm"])
         return self.movieInfos[movieName]
 
     def getMoviePosterPath(self, movieName, width=300):

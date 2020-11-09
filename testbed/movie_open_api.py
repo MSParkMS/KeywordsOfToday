@@ -4,6 +4,10 @@ import json
 from datetime import date, timedelta
 from urllib import parse
 
+from bs4 import BeautifulSoup
+from selenium import webdriver
+import time
+
 class MovieOpenAPI:
     def __init__(self):
         with open('config.json', 'r') as f:
@@ -14,6 +18,7 @@ class MovieOpenAPI:
         self.boxOfficeInfos = {}
         self.movieInfos = {}
         self.peopleInfos = {}
+        self.reviewInfos = {}
 
     def gatherBoxOfficeInfos(self):
         today = date.today()
@@ -87,6 +92,7 @@ class MovieOpenAPI:
 
     def getMovieInfo(self, movieName):
         if movieName in self.movieInfos:
+            self.getMovieReviews(movieName)
             return self.movieInfos[movieName]
 
         query = {
@@ -199,6 +205,9 @@ class MovieOpenAPI:
         # print(self.getMoviePosterPath(movieName))
 
         print("\n영화 정보가 캐슁되었습니다.")
+        self.saveMovieInfos()
+
+        getMovieReviews(movieInfo["movieNm"])
         return self.movieInfos[movieName]
 
     def getMoviePosterPath(self, movieName, width=300):
@@ -295,6 +304,7 @@ class MovieOpenAPI:
             self.peopleInfos[peopleName]["biography"] = result["biography"]
 
         print("\n영화인 정보가 캐슁되었습니다.")
+        self.savePeopleInfos()
         return self.peopleInfos[peopleName]
 
     def getProfilePath(self, peopleName, width=300):
@@ -305,3 +315,81 @@ class MovieOpenAPI:
                 return "https://image.tmdb.org/t/p/w" + str(width) + self.getPeopleInfo(peopleName)["profile_path"]
         else:
             return "/static/image/default_profile.png"
+
+    def saveMovieInfos(self):
+         with open("movieinfo_file.json", "w") as jsonfile:
+            json.dump(self.movieInfos, jsonfile)
+
+    def savePeopleInfos(self):
+        with open("peopleInfo_file.json", "w") as jsonfile:
+            json.dump(self.peopleInfos, jsonfile)
+
+    def saveReviewInfos(self):
+        with open("reviewInfo_file.json", "w") as jsonfile:
+            json.dump(self.reviewInfos, jsonfile)
+
+    def loadDatas(self):
+        try:
+            with open("movieinfo_file.json", "r") as jsonfile:
+                self.movieInfos = json.load(jsonfile)
+        except:
+            print('there is no movieinfo_file.json')
+
+        try:
+            with open("peopleInfo_file.json", "r") as jsonfile:
+                self.peopleInfos = json.load(jsonfile)
+        except:
+            print("there is no peopleInfo_file.json")
+
+        try:
+            with open("reviewInfo_file.json", "r") as jsonfile:
+                self.reviewInfos = json.load(jsonfile)
+        except:
+            print("there is no reviewInfo_file.json")
+
+    def getMovieReviews(self, movieName):
+        if movieName in self.reviewInfos:
+            return self.reviewInfos[movieName]
+
+        driver = webdriver.Chrome('chromedriver')
+        driver.get("https://movie.naver.com")
+        time.sleep(3)
+
+        element = driver.find_element_by_id("ipt_tx_srch")
+        element.send_keys(movieName)
+
+        driver.find_element_by_class_name("btn_srch").click()
+        driver.find_element_by_xpath('//*[@id="old_content"]/ul[2]/li[1]/dl/dt/a').click()
+        driver.find_element_by_xpath('//*[@id="movieEndTabMenu"]/li[5]/a').click()        
+
+        score = 0
+        reviews = []
+
+        try:
+            html = driver.page_source
+            soup = BeautifulSoup(html, 'html.parser')
+
+            result = soup.find("div", class_ = "grade_audience").find("span", class_ = "st_on")
+            score = float(result["style"].split(':')[1][:-1])
+
+            driver.switch_to_default_content()
+            driver.switch_to_frame('pointAfterListIframe')
+
+            html = driver.page_source
+            soup = BeautifulSoup(html, 'html.parser')
+        
+            content_list = soup.find("div", class_ = "score_result").find_all('li')
+            for li in content_list :
+                temp_review = li.find("div", class_ = "score_reple").find("p").get_text()
+                temp_review = temp_review.strip()
+                temp_review = temp_review.replace("\n\t", "")
+                temp_review = temp_review.replace("\t", "")
+                temp_review = temp_review.replace("관람객\n\n", "")
+                reviews.append(temp_review)
+        except:
+            print("there is no frame")
+
+        driver.close()
+
+        self.reviewInfos[movieName] = {"score" : score, "reviews": reviews}
+        self.saveReviewInfos()

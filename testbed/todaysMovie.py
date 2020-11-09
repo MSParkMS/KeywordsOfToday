@@ -567,6 +567,7 @@ def select_playMovieList_all() :
         conn.close()
 
 movieOpenAPI = MovieOpenAPI()
+movieOpenAPI.loadDatas()
 movieOpenAPI.gatherBoxOfficeInfos() #박스오피스 정보 OpenAPI에서 가져오기
 
 #선택된 영화 정보를 OpenAPI에서 가져오기
@@ -576,6 +577,8 @@ def select_movie_info_by_movie_name(movieName):
     movieInfo["directors"] = movieOpenAPI.getMovieDirectors(movieName)
     movieInfo["actors"] = movieOpenAPI.getMovieActors(movieName, False)
     movieInfo["poster"] = movieOpenAPI.getMoviePosterPath(movieName)
+    movieInfo["score"] = movieOpenAPI.getMovieReviews(movieName)["score"]
+    movieInfo["reviews"] = movieOpenAPI.getMovieReviews(movieName)["reviews"]
     return movieInfo
 
 #선택된 인물 정보를 OpenAPI에서 가져오기
@@ -586,7 +589,7 @@ def select_people_info_by_people_name(peopleName, isActor):
     if movieOpenAPI.getPeopleInfo(peopleName)["birthday"] is None:
         peopleInfo["birthday"] = "None"
     else:
-        movieOpenAPI.getPeopleInfo(peopleName)["birthday"]
+        peopleInfo["birthday"] = movieOpenAPI.getPeopleInfo(peopleName)["birthday"]
     peopleInfo["filmos"] = movieOpenAPI.getPeopleFilmos(peopleName, isActor, True)
     return peopleInfo
 
@@ -768,7 +771,6 @@ def getMovieSearchList():
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', debug=True, port=80)
-
 
 
 ts = select_theaters_seq("CGV")

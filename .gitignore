@@ -127,3 +127,13 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# MyData
+.movieinfo_file.json
+movieinfo_file.json
+
+.peopleinfo_file.json
+peopleinfo_file.json
+
+.reviewInfo.json
+reviewInfo_file.json

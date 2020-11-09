@@ -2,7 +2,8 @@
 
 /** movieList, theaterList **/
 body {
-    background-color: #fdfcf0;
+    /* background-color: #fdfcf0; */
+    background-image: url("/static/image/background.jpg");
 }
 
 .container {
@@ -16,13 +17,15 @@ body {
     font-weight: 400;
     font-family: NanumBarunGothic, Dotum, '돋움', sans-serif;
     background-color: beige;
-    padding: 2px;
+    padding: 10px;
+    opacity: 0.9;
 }
 
 #contents #contents_body {
     padding: 10px;
     display: inline-table;
     width: 970px;
+    /* background-color: RGBA(255,255,255,0.2); */
 }
 
 .theater_list {
@@ -73,6 +76,7 @@ body {
 .menuList {
     margin-left: -40px;
     overflow: hidden;
+    opacity: 0.9;
 }
 
 .menuList .menu {
@@ -110,8 +114,14 @@ body {
     padding: 17px;
 }
 
+.movieTime_list .movieTime a {
+    display: grid;
+    color: brown;
+}
+
 .movieTime_list .movieTime a:hover {
     text-decoration: none;
+    background-color: azure;
 }
 
 .movieTime_list .movieTime a:visited {
@@ -131,12 +141,18 @@ body {
     white-space: normal;
 }
 
+.movieTime_list .movieTime {
+    background-color: antiquewhite;
+    opacity: 0.9;
+}
+
 .movieTime_list .movieTime:hover {
     background-color: antiquewhite;
+    opacity: 1;
 }
 
 .movieTime_list .movieTime em {
-    width: 48%;
+    width: 100%;
     float: left;
     display: block;
     font-family: verdana, sans-serif;
@@ -152,7 +168,7 @@ body {
     font-weight: bold;
     text-overflow: ellipsis;
     padding: 10px;
-    width: 48%;
+    width: 100%;
     text-align: center;
 }
 
@@ -191,6 +207,7 @@ div#megabox_list {
     margin-bottom: 5px;
     background: burlywood;
     padding: 5px;
+    opacity: 0.9;
 }
 
 #area_div {
@@ -224,6 +241,39 @@ div#megabox_list {
 }
 
 /** movieInfo.html **/
+.movieInfoArea p {
+    margin-bottom: 0;
+}
+
+.movieInfoArea h4 {
+    color: white;
+    font-weight: bold;
+    font-size: 20pt;
+    background-color: RGBA(0,0,0,0.5);
+    padding: 7px;
+    margin-top: 15px;
+}
+
+.movieInfoArea h5 {
+    color: white;
+    font-weight: bold;
+    font-size: 15pt;
+    background-color: RGBA(0,0,0,0.5);
+    padding: 7px;
+    max-width: 78%;
+}
+
+.movieInfoArea .score ul li {
+    color: white;
+    font-weight: bold;
+    font-size: 12pt;
+    border-style: groove;
+    max-width: 78%;
+    list-style: none;
+    margin-left:-20px;
+    background-color: RGBA(0,0,0,0.5);
+}
+
 .movieInfoArea {
     width: 100%;
 }
@@ -242,32 +292,29 @@ div#megabox_list {
     height: 100%;
 }
 
-.movieInfoArea h4 {
-    /* float:left; */
-    font-size: 19px;
-    position: relative;
-    color: #444;
-    padding: 40px 0 10px;
-    font-weight: 400;
-    border-top: 1px solid #ddd;
-    margin-top: 15px;
-}
-
 .movieInfoArea .genres {
-    width: 79%;
+    color: white;
+    font-weight: bold;
 }
 
-.movieInfoArea .directores {
+.movieInfoArea .directores a, .movieInfoArea .directores a:hover, .movieInfoArea .directores a:visited {
     width: 79%;
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
 }
 
-.movieInfoArea .actors {
+.movieInfoArea .actors a, .movieInfoArea .directores a:hover, .movieInfoArea .directores a:visited {
     width: 79%;
+    text-decoration: none;
+    color: white;
+    font-weight: bold;
 }
 
 .movieInfoArea .actors ul {
     float: none;
     margin-bottom: -4px;
+    margin-left: -40px;
 }
 
 .movieInfoArea .actors ul li {
@@ -283,17 +330,24 @@ div#megabox_list {
 }
 
 /** peopleinfo **/
-.filmos h4 {
+.filmos h4, .day h4 {
     /* float:left; */
     font-size: 19px;
     position: relative;
-    color: #444;
+    color: white;
     padding: 40px 0 10px;
     font-weight: 400;
     border-top: 1px solid #ddd;
     margin-top: 15px;
 }
 
+.filmos, .day{
+    background-color: RGBA(0,0,0,0.5);
+    font-size: 15pt;
+    padding: 10px;
+    font-weight: bold;
+    color: white;
+}
 
 /** movePlayList **/
 .movePlayList {
@@ -307,14 +361,15 @@ div#megabox_list {
     /* margin-left: -40px; */
     margin-top: 15px;
     text-align: -webkit-center;
+    background-color: RGBA(255,255,255,0.8);
+    margin-right: 8px;
 }
 
 .movePlayList .theater {
-    border: 1px solid burlywood;
+    border: 2px solid brown;
     display: block;
     text-align: center;
     font-weight: bold;
-    margin-right: 8px;
     width: 229px;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -329,7 +384,6 @@ div#megabox_list {
 .movePlayList .time {
     font-weight: bold;
     text-decoration-line: underline;
-    margin-right: 8px;
 }
 
 .movePlayList .seats {
@@ -338,33 +392,28 @@ div#megabox_list {
 
 
 /** boxOffice **/
+.boxOffice {
+    background-color: RGBA(0,0,0,0.5);
+    color: white;
+}
+
+.boxOffice a, .boxOffice a:hover, .boxOffice a:visited{
+    color: white;
+    font-weight: bold;
+    text-decoration: none;
+}
+
 table {
     width: 100%;
 }
 
 table th {
-    background-color: white;
+    background-color: RGBA(0,0,255,0.5);
 }
 
 table th,
 td {
     text-align: center;
-}
-
-.boxOffice .rank {
-    width: 10%;
-}
-
-.boxOffice .rankUD {
-    width: 10%;
-}
-
-.boxOffice .NO {
-    width: 15%;
-}
-
-.boxOffice .date {
-    width: 15%;
 }
 
 #bottom {
@@ -411,13 +460,27 @@ td {
 }
 
 /** movieSearch.html **/
+#searchForm {
+    color: white;
+    font-weight: bold;
+}
+
 #searchResult {
     margin-top: 20px;
     width:950px;
 }
 
+#searchResult .title{
+    margin-left: 175px;
+    padding: 10px;
+}
+
 #searchResult .movie li{
-    height: 250px;    
+    height: 250px;
+    background-color: RGBA(0,0,0,0.5);
+    color: white;
+    font-weight: bold;
+    padding: 10px;
 }
 
 .movie {

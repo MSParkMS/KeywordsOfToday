@@ -408,3 +408,31 @@ td {
     color: #63ddfb;
     padding-left: 0;
 }
+
+/** movieSearch.html **/
+#searchResult {
+    margin-top: 20px;
+    width:950px;
+    
+}
+
+.movie {
+    list-style: none;
+    margin-left: -40px;
+}
+
+.movie .movieThumb {
+    float: left;
+}
+
+.st{
+    float:left;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.br{
+    float:left;
+    margin-left: 10px;
+    margin-right: 20px;
+}

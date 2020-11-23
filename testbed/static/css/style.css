@@ -499,12 +499,19 @@ td {
 
 .st{
     float:left;
+    min-width: 120px;
     margin-left: 10px;
     margin-right: 10px;
 }
 
 .br{
     float:left;
+    min-width: 120px;
     margin-left: 10px;
     margin-right: 20px;
+}
+
+.by{
+	min-width: 120px;
+    float:left;
 }
